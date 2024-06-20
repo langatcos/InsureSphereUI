@@ -134,7 +134,7 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'; const C
     }
     const handleSubmitCode = async (e) => {
         e.preventDefault()
-
+        
         const newCode = { codeId, codesetLinked, description }
        
         if (description) {
@@ -158,6 +158,7 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'; const C
         else {
             SetErrorOccured(true)
         }
+        setDisabledSave(true)
     }
     const handleUpdateCodes = async (e) => {
         e.preventDefault()
@@ -178,6 +179,7 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'; const C
         else {
             console.log("Error Occured")
         }
+        setDisabledEdit(true)
     }
     const handleCodeDelete = (codesetId, codeId) => {
         if (codeId) {

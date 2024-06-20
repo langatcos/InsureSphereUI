@@ -15,7 +15,7 @@ const Addclient = () => {
     const [companyDisabled, setCompanyDisabled] = useState(true)
     const [disabledClient, setDisabledClient] = useState(false)
     const [checked, setChecked] = useState(true)
-    const [clienttype, setClientType] = useState(1)
+    const [clientType, setClientType] = useState(1)
     const [title, setSelectedTitle] = useState("")
     const [firstName, setfirstName] = useState("")
     const [surname, setSurname] = useState("")
@@ -168,7 +168,7 @@ const Addclient = () => {
             transformedJson.push({
                 id: 0, // set the "id" field to 0 as per the desired format
                 roleId: parseInt(roleId), // parse the roleId to an integer
-                infoid: parseInt(infoId), // parse the infoId to an integer
+                infoId: parseInt(infoId), // parse the infoId to an integer
                 value: infoValue
             });
         });
@@ -176,10 +176,10 @@ const Addclient = () => {
     const handleSubmit = (e) => {
         e.preventDefault()
         const newclient = {
-            clienttype, title, firstName, surname, companyName, active
+            clientType, title, firstName, surname, companyName, active
         }
         if (addedClientid === 0) {
-            if ((clienttype === 1 && (title !== "" && firstName !== "" && surname !== "")) || (clienttype === 2 && (companyName !== ""))) {
+            if ((clientType === 1 && (title !== "" && firstName !== "" && surname !== "")) || (clientType === 2 && (companyName !== ""))) {
                 setCaptured(false)
 
 
@@ -204,12 +204,12 @@ const Addclient = () => {
                     .then(data => {
                         //console.log(data);
                         setRespondedata(data)
-                        const clientid = data.clientid
-                        setAddedClientid(clientid)
+                        const clientId = data.id
+                        setAddedClientid(clientId)
 
                         const infos = {
                             "id": 0,
-                            "clientId": clientid,
+                            "clientId": clientId,
                             "roleInfo": roleId
                         }
 
@@ -223,7 +223,7 @@ const Addclient = () => {
                             roleId: roleId
                         }));
                         const transformedJsonWithClientId = transformedJson.map(obj => ({ ...obj, clientid: infos.clientId }));
-                        //console.log(transformedJsonWithClientId)
+                        console.log(transformedJsonWithClientId)
                        
 
                         try {

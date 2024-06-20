@@ -23,11 +23,11 @@ const SearchClients = () => {
             .then(data => {
                 SetSearchResult(data)
 
-                const clientid = data[0].clientid
-                const clienttype = data[0].clienttype
+                const clientid = data[0].id
+                const clienttype = data[0].clientType
 
                 //console.log("this"+ clientid)
-                //console.log(clienttype)
+                //console.log(data)
                 if (clientid != null) {
                     if (clienttype === 1) {
                         setSearchExist(true)
@@ -77,7 +77,7 @@ const SearchClients = () => {
 
     },[clientrole])
 
-    console.log(clientrole)
+    //console.log(clientrole)
 
     return (
         <div className='searchClients'>
@@ -102,11 +102,11 @@ const SearchClients = () => {
                             </thead>
                             <tbody>
                                 {searchresult.map((item) => (
-                                    <tr key={item.clientid}>
-                                        <td>{item.clientid}</td>
-                                        <td>{item.clienttype}</td>
+                                    <tr key={item.id}>
+                                        <td>{item.id}</td>
+                                        <td>{item.clientType}</td>
                                         <td>{item.title}</td>
-                                        <td>{item.firstname}</td>
+                                        <td>{item.firstName}</td>
                                         <td>{item.surname}</td>
                                         <td>
                                             <button onClick={() => {
@@ -131,10 +131,10 @@ const SearchClients = () => {
                             </thead>
                             <tbody>
                                 {searchresult.map((item) => (
-                                    <tr key={item.clientid}>
-                                        <td>{item.clientid}</td>
-                                        <td>{item.clienttype}</td>
-                                        <td>{item.companyname}</td>
+                                    <tr key={item.id}>
+                                        <td>{item.id}</td>
+                                        <td>{item.clientType}</td>
+                                        <td>{item.companyName}</td>
 
                                         <td>
                                             <button onClick={() => {

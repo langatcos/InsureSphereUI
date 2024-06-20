@@ -25,7 +25,7 @@ const ClientSettings = () => {
     const [isValid, setValid] = useState(false);
     const [disabledDelete, setDisabledDelete] = useState(false)
     const [roleId, setRoleid] = useState("")
-    const [infoId, setInfoId] = useState("")
+    const [fieldId, setfieldId] = useState("")
     const [infoDescription, setInfoDescription] = useState("")
     const [inputControl, setInputControl] = useState("")
     const [required, setRequired] = useState(false)
@@ -96,7 +96,7 @@ const ClientSettings = () => {
             setSelectedRoleFields([]);
         });
         setRoleid("")
-        setInfoId("")
+        setfieldId("")
         setInfoDescription("")
         setInputControl("")
         setSequence("")
@@ -109,9 +109,9 @@ const ClientSettings = () => {
     
     }, [fields])
     
-    const handleFieldClick = (roleId, infoId, desc, infoField, sequence, codesetLinked, required) => {
+    const handleFieldClick = (roleId, fieldId, desc, infoField, sequence, codesetLinked, required) => {
         setRoleid(roleId)
-        setInfoId(infoId)
+        setfieldId(fieldId)
         setInfoDescription(desc)
         setInputControl(infoField)
         setSequence(sequence)
@@ -141,27 +141,27 @@ const ClientSettings = () => {
             console.log("Data Length "+data.length)
             if (data.length > 0) {
                 const maxSeq = Math.max(...data.map(a => a.sequence));
-                const max = Math.max(...data.map(a => a.infoId));
+                const max = Math.max(...data.map(a => a.fieldId));
 
-                setInfoId(isFinite(max) ? max + 1 : 1);
+                setfieldId(isFinite(max) ? max + 1 : 1);
                 setSequence(isFinite(maxSeq) ? maxSeq + 1 : 1);
             } else {
-                setInfoId(1);
+                setfieldId(1);
                 setSequence(1);
             }
         }).catch(error => {
-            setInfoId(1);
+            setfieldId(1);
             setSequence(1);
                 //SetErrorOccured(true);
         setSelectedRoleFields([]);
     });
     }
 
-    const handleFieldEditing = (codesetId, infoId) => {
+    const handleFieldEditing = (codesetId, fieldId) => {
         setDisabledSave(true)
         SetErrorOccured(false)
         setDisabledDelete(false)
-        if (infoId) {
+        if (fieldId) {
             setDisabled(false);
             setDisabledEdit(false)
         } else {
@@ -170,8 +170,9 @@ const ClientSettings = () => {
     }
     const handleSubmitField = async (e) => {
         e.preventDefault()
+        
 
-        const newfield = { roleId, infoId, infoDescription, inputControl, required, codesetLinked, sequence, required }
+        const newfield = { roleId, fieldId, infoDescription, inputControl, required, codesetLinked, sequence, required }
         if (infoDescription) {
             fetch(API_BASE_URL + "/addrolefields", {
                 method: 'POST',
@@ -193,13 +194,16 @@ const ClientSettings = () => {
         else {
             SetErrorOccured(true)
         }
+        setDisabledSave(true)
+       
     }
     const handleUpdateField = async (e) => {
         e.preventDefault()
+        
         const updaterolefield = {
-            roleId, infoId, infoDescription, inputControl, required, codesetLinked, sequence
+            roleId, fieldId, infoDescription, inputControl, required, codesetLinked, sequence
         }
-        const response = await fetch(API_BASE_URL + "/updaterolefield/" + roleId + "/" + infoId, {
+        const response = await fetch(API_BASE_URL + "/updaterolefield/" + roleId + "/" + fieldId, {
             method: 'PUT',
             headers: {
                 "content-Type": "application/json"
@@ -213,10 +217,11 @@ const ClientSettings = () => {
         else {
             console.log("Error Occured")
         }
+        setDisabledEdit(true)
     }
-    const handleCodeDelete = (roleId, infoId) => {
-        if (infoId) {
-            fetch(API_BASE_URL + "/deleteroleField/" + roleId + "/" + infoId, {
+    const handleCodeDelete = (roleId, fieldId) => {
+        if (fieldId) {
+            fetch(API_BASE_URL + "/deleteroleField/" + roleId + "/" + fieldId, {
                 method: 'DELETE'
             }).then((response) => {
                 if (response.ok) {
@@ -275,7 +280,7 @@ const ClientSettings = () => {
                         <thead>
                             <tr>
                                 <th>id</th>
-                                <th>InfoId</th>
+                                <th>field Id</th>
                                 <th>Field Name</th>
                                 <th>Input Control set</th>
                                 <th>Required</th>
@@ -287,10 +292,10 @@ const ClientSettings = () => {
                         <tbody className='codesection'>
                             {fields.map((field) => (
                                 <tr key={field.fieldId} onClick={() => {
-                                    handleFieldClick(field.roleId, field.infoId, field.infoDescription, field.inputControl, field.sequence, field.codesetLinked, field.required)
+                                    handleFieldClick(field.roleId, field.fieldId, field.infoDescription, field.inputControl, field.sequence, field.codesetLinked, field.required)
                                 }}>
                                     <td>{field.fieldId}</td>
-                                    <td>{field.infoId}</td>
+                                    <td>{field.fieldId}</td>
                                     <td>{field.infoDescription} </td>
                                     <td>{field.inputControl} </td>
                                     <td>{field.required ? 'True' : 'False'}</td>
@@ -306,8 +311,8 @@ const ClientSettings = () => {
                             </div>
                             <div className="action">
                                 <ControlPointIcon className='icon add' onClick={() => { handleAddField(selectedcodesetid) }} />
-                                <BorderColorIcon className='icon edit' onClick={() => { handleFieldEditing(selectedcodesetid, infoId) }} />
-                                {disabledDelete && <DoNotDisturbOnIcon className='icon delete' onClick={() => { handleCodeDelete(selectedcodesetid, infoId) }} />}
+                                <BorderColorIcon className='icon edit' onClick={() => { handleFieldEditing(selectedcodesetid, fieldId) }} />
+                                {disabledDelete && <DoNotDisturbOnIcon className='icon delete' onClick={() => { handleCodeDelete(selectedcodesetid, fieldId) }} />}
                             </div>
                         </div>
                         <div className='bottom'>
@@ -318,7 +323,7 @@ const ClientSettings = () => {
                                         <div><input type="text" disabled value={roleId} onChange={e => setRoleid(e.target.value)} /></div>
 
                                         <label>Info</label>
-                                        <div><input type="text" disabled value={infoId} onChange={e => setInfoId(e.target.value)} /></div>
+                                        <div><input type="text" disabled value={fieldId} onChange={e => setfieldId(e.target.value)} /></div>
 
                                         <label>Description</label>
                                         <input type="text" disabled={disabled} value={infoDescription} required onChange={e => setInfoDescription(e.target.value)} />
