@@ -1,0 +1,2 @@
+.products{display:flex;flex-direction:column}.products .productscontainer{display:flex}.products .productscontainer .sidebar{flex:1}.products .productscontainer .productcontents{flex:7}.products .productscontainer .productcontents .loc{display:flex;cursor:pointer}.products .productscontainer .productcontents .loc .icon{color:green}
+/*# sourceMappingURL=products.min.css.map */

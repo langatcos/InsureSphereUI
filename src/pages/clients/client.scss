@@ -1,0 +1,13 @@
+.client{
+    display: flex;
+    flex-direction: column;
+    .clientcontainer{
+        display: flex;
+        .sidebar{
+            flex: 1;
+        }
+        .clientContents{
+            flex:7;
+        }
+    }
+}

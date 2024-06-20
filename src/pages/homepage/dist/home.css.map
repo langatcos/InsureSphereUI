@@ -1,0 +1,1 @@
+{"version":3,"names":[],"mappings":"","sources":["home.scss"],"sourcesContent":[".home{\r\n    display: flex;\r\n    flex-direction: column;\r\n     .homecontainer{\r\n        display: flex;\r\n        .sidebar{\r\n            flex: 1;\r\n        }\r\n        .homecontents{\r\n            flex:7;\r\n        }\r\n    }\r\n}"],"file":"home.css"}

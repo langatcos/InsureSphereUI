@@ -1,0 +1,38 @@
+.sidebar{
+    height:calc(100vh);
+    background-color: rgba(202, 202, 221, 0.568);
+    .Highlights{
+       margin-top: 5px;
+        .header{
+            color:gray ;
+            font-size: 20px;
+            font-weight: 600;
+            margin-left: 5px;
+            border-bottom: 2px solid gray;
+            padding: 3px;
+        }
+        .menuitem{
+            font-size: 12;
+            font-weight: 400;
+            margin-left: 10px;
+            color: rgb(143, 134, 134);
+            margin-top: 5px;
+            padding: 3px;
+            cursor: pointer;
+            align-items: center;
+            display: flex;
+            .icon{
+                margin-right: 5px;
+                color: rgb(112, 37, 22);
+            }
+            &:hover{
+                background-color: white;
+            }
+            &.active{
+                background-color: white;
+            }
+
+
+        }
+    }
+}

@@ -1,0 +1,170 @@
+.codes {
+  display: flex;
+}
+
+.codes .codescontainer {
+  height: 500px;
+  overflow-y: scroll;
+  background-color: #dbd8d8;
+  -webkit-box-shadow: 2px 3px 15px 0px #000000;
+  box-shadow: 2px 3px 15px 0px #000000;
+  flex: 2;
+  margin-right: 5px;
+  border-radius: 5px;
+}
+
+.codes .codescontainer .top {
+  display: flex;
+  justify-content: space-between;
+}
+
+.codes .codescontainer .top .codesetcontrols .addIcon {
+  font-size: 20px;
+  cursor: pointer;
+  color: green;
+  margin-right: 10px;
+}
+
+.codes .codescontainer .codesetformContainer {
+  display: flex;
+}
+
+.codes .codescontainer .codesetformContainer .formitem {
+  display: flex;
+}
+
+.codes .codescontainer .codesetformContainer .formitem label {
+  width: 60%;
+  color: gray;
+}
+
+.codes .codescontainer .codesetformContainer .formitem input {
+  border-radius: 7px;
+  margin-left: 10px;
+  margin-top: 5px;
+}
+
+.codes .codescontainer .codesetformContainer .formitem button {
+  color: gray;
+  border: none;
+  margin-top: 5px;
+  border-radius: 7px;
+  width: 200px;
+  background-color: #7faf7f;
+}
+
+.codes .rightside {
+  border-radius: 5px;
+  flex: 4;
+  -webkit-box-shadow: 2px 3px 15px 0px #000000;
+  box-shadow: 2px 3px 15px 0px #000000;
+}
+
+.codes .rightside table {
+  overflow-y: scroll;
+}
+
+.codes .rightside .addedit {
+  border: 2px solid gray;
+  display: flex;
+  flex-direction: column;
+}
+
+.codes .rightside .addedit .top {
+  display: flex;
+  border: 1px solid;
+  justify-content: space-between;
+}
+
+.codes .rightside .addedit .top .header {
+  color: gray;
+}
+
+.codes .rightside .addedit .top .action {
+  margin-right: 15px;
+}
+
+.codes .rightside .addedit .top .action .icon {
+  cursor: pointer;
+  font-size: 15px;
+  margin-right: 5px;
+}
+
+.codes .rightside .addedit .top .action .icon.add {
+  color: green;
+}
+
+.codes .rightside .addedit .top .action .icon.edit {
+  color: #5f56af;
+}
+
+.codes .rightside .addedit .top .action .icon.delete {
+  color: #813333;
+}
+
+.codes .rightside .addedit .top .action .icon.delete:disabled {
+  color: gray;
+}
+
+.codes .rightside .addedit .bottom .formholder {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  display: flex;
+}
+
+.codes .rightside .addedit .bottom .formholder form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.codes .rightside .addedit .bottom .formholder form .setids {
+  display: flex;
+  flex: 2;
+  margin-bottom: 10px;
+}
+
+.codes .rightside .addedit .bottom .formholder form .setids label {
+  color: gray;
+  margin-left: 10px;
+}
+
+.codes .rightside .addedit .bottom .formholder form .setids input {
+  margin-left: 10px;
+  height: 30px;
+  border-radius: 5px;
+  border: 1px solid gray;
+}
+
+.codes .rightside .addedit .bottom .formholder form .setids input:disabled {
+  background-color: gray;
+}
+
+.codes .rightside .addedit .bottom .formholder form .buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-right: 99px;
+}
+
+.codes .rightside .addedit .bottom .formholder form .buttons .edit button {
+  color: white;
+  background-color: #85ca85;
+  border-radius: 5px;
+  border: none;
+  width: 150px;
+  margin-left: 10px;
+}
+
+.codes .rightside .addedit .bottom .formholder form .buttons .edit button:disabled {
+  background-color: gray;
+}
+
+.codes .rightside .addedit .bottom .formholder form .error {
+  color: red;
+  justify-content: center;
+  align-items: center;
+  margin-left: 200px;
+  margin-top: 20px;
+}
+
+/*# sourceMappingURL=codes.css.map */

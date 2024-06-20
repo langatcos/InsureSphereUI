@@ -1,0 +1,141 @@
+.attributeContainer {
+  display: flex;
+  justify-content: space-between;
+}
+
+.attributeContainer .leftside {
+  flex: 2;
+}
+
+.attributeContainer .leftside .loc {
+  margin-bottom: 10px;
+}
+
+.attributeContainer .leftside .loc .icon {
+  margin-left: 10px;
+}
+
+.attributeContainer .leftside .item {
+  font-weight: 600;
+  color: gray;
+}
+
+.attributeContainer .leftside .item .description {
+  font-weight: 200;
+  font-size: 14px;
+}
+
+.attributeContainer .rightside {
+  background-color: #ced6ce;
+  margin-top: 10px;
+  margin-left: 20px;
+  flex: 3;
+  color: gray;
+}
+
+.attributeContainer .rightside .add_benefit {
+  background-color: #ced6ce;
+}
+
+.attributeContainer .rightside .add_benefit form {
+  display: flex;
+  flex-direction: column;
+}
+
+.attributeContainer .rightside .add_benefit form .formitem {
+  margin-bottom: 10px;
+  display: flex;
+  margin-top: 20px;
+}
+
+.attributeContainer .rightside .add_benefit form .formitem label {
+  width: 25%;
+  font-size: 20px;
+  color: gray;
+}
+
+.attributeContainer .rightside .add_benefit form .formitem input {
+  width: 65%;
+  border-radius: 7px;
+  border: 1px solid gray;
+  height: 40px;
+}
+
+.attributeContainer .rightside .add_benefit form .formitem .selectitem {
+  width: 65%;
+  border-radius: 7px;
+  border: 1px solid gray;
+  height: 40px;
+}
+
+.attributeContainer .rightside .add_benefit form .formitem button {
+  height: 30px;
+  cursor: pointer;
+  color: #e9e0e0;
+  width: 150px;
+  margin-left: 10px;
+  border-radius: 5px;
+  border: none;
+  background-color: #89b389;
+}
+
+.attributeContainer .rightside .itemscontainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.attributeContainer .rightside .itemscontainer .selectedrole {
+  align-items: center;
+  justify-content: center;
+  display: flex;
+}
+
+.attributeContainer .rightside .itemscontainer .selectedrole .formitem {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  margin: 5px 5px;
+  padding: 5px;
+}
+
+.attributeContainer .rightside .itemscontainer .selectedrole .formitem .itemlabel {
+  width: 25%;
+  display: flex;
+  color: gray;
+}
+
+.attributeContainer .rightside .itemscontainer .selectedrole .formitem .iteminput {
+  width: 100%;
+}
+
+.attributeContainer .rightside .itemscontainer .selectedrole .formitem .iteminput input {
+  border-radius: 9px;
+  border: 1px solid gray;
+  width: 75%;
+}
+
+.attributeContainer .rightside .itemscontainer .selectedrole .formitem .iteminput select {
+  border-radius: 9px;
+  border: 1px solid gray;
+  color: #3a3838;
+}
+
+.attributeContainer .rightside .itemscontainer .selectedrole .formitem .iteminput .checkbox {
+  border-radius: 9px;
+  border: 1px solid gray;
+  color: #3a3838;
+}
+
+.attributeContainer .rightside .actionContainer {
+  display: flex;
+  justify-content: space-between;
+}
+
+.attributeContainer .rightside .actionContainer button {
+  color: white;
+  background-color: #436643;
+  border-radius: 5px;
+  width: 100px;
+}
+
+/*# sourceMappingURL=productattributes.css.map */

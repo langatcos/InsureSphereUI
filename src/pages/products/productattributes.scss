@@ -1,0 +1,148 @@
+.attributeContainer{
+    display: flex;
+    justify-content: space-between;;
+    .leftside{
+        flex: 2;
+        .loc{
+            margin-bottom:10px;
+            .icon{
+                margin-left: 10px;
+            }
+        }
+
+        .item{
+            
+            font-weight: 600;
+            color: gray;  
+            .description{
+            
+                font-weight: 200;
+                font-size: 14px;
+            }
+    
+          }
+    
+        
+        
+    }
+    .rightside{
+        background-color: rgb(206, 214, 206);
+        margin-top: 10px;
+        margin-left: 20px;
+       // background-color: blue;
+        flex: 3;
+        color: gray;
+       .add_benefit{
+        background-color: rgb(206, 214, 206);
+        form{
+           
+        display: flex;
+        flex-direction: column;
+            .formitem{
+                margin-bottom: 10px;
+                display: flex;
+                margin-top: 20px;
+                label{
+                    width: 25%;
+                    font-size: 20px;
+                    color: gray;
+                }
+                input{
+                    width: 65%;
+                    border-radius: 7px;
+                    border: 1px solid gray;
+                    height: 40px;
+                }
+                .selectitem{
+                    width: 65%;
+                    border-radius: 7px;
+                    border: 1px solid gray;
+                    height: 40px;
+                }
+                button{    
+                    height: 30px;
+                cursor: pointer;
+                color: rgb(233, 224, 224);
+                width: 150px;
+                margin-left: 10px;
+                border-radius:5px;
+                border: none;
+                background-color:rgb(137, 179, 137);            
+                }
+
+            }
+        }
+
+       }
+       .itemscontainer{
+        display: flex;
+        flex-direction: column;
+        
+        .selectedrole{
+            //background-color: green;
+            align-items: center;
+            justify-content: center;
+
+            display: flex;
+            .formitem{
+                width: 100%;
+                
+               // background-color: blue;
+                display: flex;
+                justify-content: space-between;
+                margin: 5px 5px;
+                padding: 5px;
+                .itemlabel{
+
+                   width: 25%;
+                    display: flex;
+                   // margin-right: 10px;
+                    color: gray;
+                }
+                .iteminput{
+                 //background-color: blue;
+                 width: 100%;
+                    input{
+                        border-radius: 9px;
+                        border:1px solid gray;
+                        width: 75%;
+                       
+                        
+                    }
+                    select{
+                        border-radius: 9px;
+                        border:1px solid gray;
+                        color: rgb(58, 56, 56);
+                    }
+                    .checkbox{
+                        border-radius: 9px;
+                        border:1px solid gray;
+                        color: rgb(58, 56, 56);
+                    }
+                    
+                }
+
+            }
+           
+
+        }
+
+       }
+       .actionContainer{
+        display: flex;
+        justify-content:space-between;
+        button{
+            color: white;
+            background-color: rgb(67, 102, 67);
+            border-radius: 5px;
+            width: 100px;
+        }
+       }
+       
+
+
+    }
+
+   
+}
+    

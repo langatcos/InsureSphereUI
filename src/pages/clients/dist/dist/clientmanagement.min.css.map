@@ -1,0 +1,1 @@
+{"version":3,"sources":["clientmanagement.scss"],"names":[],"mappings":"AAAA,kBACE,QAAS","file":"clientmanagement.min.css","sourcesContent":[".clientmanagement{\r\n    display: flex;\r\n}"]}

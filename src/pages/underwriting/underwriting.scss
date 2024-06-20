@@ -1,0 +1,13 @@
+.underwriting{
+    display: flex;
+    flex-direction: column;
+     .uwcontainer{
+        display: flex;
+        .sidebar{
+            flex: 1;
+        }
+        .uwcontents{
+            flex:7;
+        }
+    }
+}

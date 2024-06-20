@@ -1,0 +1,18 @@
+.client {
+  display: flex;
+  flex-direction: column;
+}
+
+.client .clientcontainer {
+  display: flex;
+}
+
+.client .clientcontainer .sidebar {
+  flex: 1;
+}
+
+.client .clientcontainer .clientContents {
+  flex: 7;
+}
+
+/*# sourceMappingURL=client.css.map */

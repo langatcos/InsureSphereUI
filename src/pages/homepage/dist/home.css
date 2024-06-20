@@ -1,0 +1,18 @@
+.home {
+  display: flex;
+  flex-direction: column;
+}
+
+.home .homecontainer {
+  display: flex;
+}
+
+.home .homecontainer .sidebar {
+  flex: 1;
+}
+
+.home .homecontainer .homecontents {
+  flex: 7;
+}
+
+/*# sourceMappingURL=home.css.map */

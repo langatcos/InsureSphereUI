@@ -1,0 +1,1 @@
+{"version":3,"names":[],"mappings":"","sources":["clientmanagement.scss"],"sourcesContent":[".clientmanagement{\r\n    display: flex;\r\n}"],"file":"clientmanagement.css"}

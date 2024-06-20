@@ -1,0 +1,13 @@
+.home{
+    display: flex;
+    flex-direction: column;
+     .homecontainer{
+        display: flex;
+        .sidebar{
+            flex: 1;
+        }
+        .homecontents{
+            flex:7;
+        }
+    }
+}

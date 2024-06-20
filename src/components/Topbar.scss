@@ -1,0 +1,16 @@
+.topbar{
+    display: flex;
+    height: 50px;
+    background-color: rgb(190, 228, 190);
+    color: red($color: #000000);
+    justify-content: space-between;
+    position:sticky;
+    .logo{
+        color: gray;
+        font-size: 25px;
+        margin-left: 10px;
+    }
+    .profile{
+        margin-right: 10px;
+    }
+}

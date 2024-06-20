@@ -1,0 +1,167 @@
+.addclient {
+  display: flex;
+}
+
+.addclient .clientaddition {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.addclient .clientaddition .functions {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.addclient .clientaddition .functions span {
+  color: red;
+}
+
+.addclient .clientaddition form {
+  display: flex;
+  flex-direction: column;
+}
+
+.addclient .clientaddition form .formContents {
+  justify-content: space-between;
+  display: flex;
+}
+
+.addclient .clientaddition form .formContents .personaldetails {
+  border-radius: 5px;
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  margin: 5px 5px;
+}
+
+.addclient .clientaddition form .formContents .personaldetails .formitem {
+  display: flex;
+  margin: 5px 5px;
+  padding: 5px;
+}
+
+.addclient .clientaddition form .formContents .personaldetails .formitem .itemlabel {
+  width: 25%;
+  display: flex;
+  margin-right: 10px;
+  color: gray;
+}
+
+.addclient .clientaddition form .formContents .personaldetails .formitem .iteminput input {
+  border-radius: 9px;
+  border: 1px solid gray;
+}
+
+.addclient .clientaddition form .formContents .personaldetails .formitem .iteminput input:disabled {
+  background-color: gray;
+}
+
+.addclient .clientaddition form .formContents .selections {
+  display: flex;
+  margin: 5px 5px;
+  border-radius: 5px;
+  width: 48%;
+}
+
+.addclient .clientaddition form .formContents .selections .selectbox {
+  width: 40%;
+  height: 100%;
+}
+
+.addclient .clientaddition form .formContents .selections .selectbox select {
+  background: 10px;
+  height: 80%;
+  width: 90%;
+}
+
+.addclient .clientaddition form .formContents .selections .icon {
+  width: 10%;
+  margin-right: 10px;
+}
+
+.addclient .clientaddition form .formContents .selections .selectedbox {
+  margin-left: 10px;
+  width: 40%;
+}
+
+.addclient .clientaddition form .formContents .selections .selectedbox select {
+  height: 80%;
+  width: 90%;
+  color: #222020;
+}
+
+.addclient .clientaddition form .addbutton {
+  display: flex;
+  justify-content: space-between;
+  margin-right: 200px;
+  color: gray;
+}
+
+.addclient .clientaddition form .addbutton button {
+  color: white;
+  background-color: #436643;
+  border-radius: 5px;
+  width: 100px;
+}
+
+.addclient .clientaddition form .selectedroles {
+  display: flex;
+  margin-top: 10px;
+}
+
+.addclient .clientaddition form .selectedroles .roleitem {
+  width: 100%;
+  margin: 5px 5px;
+  border-radius: 10px;
+  -webkit-box-shadow: 3px 3px 15px -6px #000000;
+  box-shadow: 3px 3px 15px -6px #000000;
+}
+
+.addclient .clientaddition form .selectedroles .roleitem .description {
+  color: gray;
+}
+
+.addclient .clientaddition form .selectedroles .roleitem .selectedrole {
+  align-items: center;
+  justify-content: center;
+  display: flex;
+}
+
+.addclient .clientaddition form .selectedroles .roleitem .selectedrole .formitem {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  margin: 5px 5px;
+  padding: 5px;
+}
+
+.addclient .clientaddition form .selectedroles .roleitem .selectedrole .formitem .itemlabel {
+  width: 25%;
+  display: flex;
+  color: gray;
+}
+
+.addclient .clientaddition form .selectedroles .roleitem .selectedrole .formitem .iteminput {
+  width: 100%;
+}
+
+.addclient .clientaddition form .selectedroles .roleitem .selectedrole .formitem .iteminput input {
+  border-radius: 9px;
+  border: 1px solid gray;
+}
+
+.addclient .clientaddition form .selectedroles .roleitem .selectedrole .formitem .iteminput select {
+  border-radius: 9px;
+  border: 1px solid gray;
+  color: #3a3838;
+}
+
+.addclient .clientaddition form .selectedroles .roleitem .selectedrole .formitem .iteminput .checkbox {
+  border-radius: 9px;
+  border: 1px solid gray;
+  color: #3a3838;
+}
+
+/*# sourceMappingURL=addclient.css.map */

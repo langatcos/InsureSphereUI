@@ -1,0 +1,23 @@
+.products{
+    display: flex;
+    flex-direction: column;
+    .productscontainer{
+        display: flex;
+        .sidebar{
+            flex: 1;
+        }
+        .productcontents{
+            flex: 7;
+            .loc{
+                display: flex;
+                cursor: pointer;
+                .icon{
+                    color: green;
+                    
+                }
+            }
+           
+            
+        }
+    }
+}

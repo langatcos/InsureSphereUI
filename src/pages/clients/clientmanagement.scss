@@ -1,0 +1,51 @@
+.clientmanagement{
+   
+    display: flex;
+    border-radius: 5px;
+    flex-direction: column;
+    //height: 500px;
+    border:1px solid gray;
+    .topmenu{
+        display: flex;
+        width: 100%;
+        height: 50px;
+        align-items: center;
+        border-radius: 5px;
+        padding: 50px;
+        border:1px solid gray;
+        
+        .menuitem{
+            margin-left: 5px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            margin-right: 15px;
+            label{
+                color: gray;
+                font-size: 13px;
+            }
+        
+            .icon{
+                
+                font-size: 40px;
+                &.add{
+                    color: green;
+    
+                }
+                &.delete{
+                    color: rgb(88, 41, 41);
+                }
+                &.search{
+                    color: rgb(177, 221, 76);
+                }
+            }
+        }
+        
+
+    }
+    .contents{
+        
+    }
+}

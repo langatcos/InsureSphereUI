@@ -1,0 +1,1 @@
+{"version":3,"names":[],"mappings":"","sources":["client.scss"],"sourcesContent":[".client{\r\n    display: flex;\r\n    flex-direction: column;\r\n    .clientcontainer{\r\n        display: flex;\r\n        .sidebar{\r\n            flex: 1;\r\n        }\r\n        .clientContents{\r\n            flex:7;\r\n        }\r\n    }\r\n}"],"file":"client.css"}

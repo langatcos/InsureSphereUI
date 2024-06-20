@@ -1,0 +1,48 @@
+.login {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login .loginpage {
+  border-radius: 10px;
+  -webkit-box-shadow: -1px 1px 15px 5px #000000;
+  box-shadow: -1px 1px 15px 5px #000000;
+}
+
+.login .loginpage .loginform {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+  width: 400px;
+  margin-top: 5px;
+}
+
+.login .loginpage .loginform input {
+  height: 30px;
+  width: 350px;
+  margin-top: 10px;
+  border-radius: 10px;
+  margin-left: 10px;
+  margin-right: 10px;
+  border: 1px solid gray;
+}
+
+.login .loginpage .loginform button {
+  background-color: #5ab45a;
+  color: gray;
+  margin-top: 10px;
+  width: 350px;
+  border-radius: 10px;
+}
+
+.login .loginpage .loginform .wrongcredentials {
+  color: red;
+  justify-self: center;
+  margin-top: 5px;
+}
+
+/*# sourceMappingURL=login.css.map */
