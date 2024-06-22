@@ -107,7 +107,6 @@ const SearchClients = () => {
 
         setClientId(clientId)
         setRoleId(roleId)
-        console.log(clientId+": "+roleId)
         setRoleFieldsData(roleFieldsData => ({
             ...roleFieldsData,
             [roleId]: {
@@ -142,7 +141,7 @@ const SearchClients = () => {
     const transformedJsonWithClientId = transformedJson.map(obj => ({ ...obj, clientId: clientId }));
     //console.log(transformedJsonWithClientId)
     const handleEdit = () => {
-        console.log("clienId:"+clientId+"Roleid:"+roleId)
+        //console.log("clienId:"+clientId+"Roleid:"+roleId)
         setEditArea(true);
         setViewDetailsSection(false);
     };
@@ -176,7 +175,7 @@ const SearchClients = () => {
             window.alert("You have not updated any Field Value, The form will exit")
             setViewDetailsSection(true)
             setEditArea(false)
-            console.error('Error updating role fields data:');
+            //console.error('Error updating role fields data:');
             // Optionally, handle error scenario (e.g., show error message)
         });
         // Add your submit logic here
