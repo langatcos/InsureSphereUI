@@ -149,7 +149,7 @@ const SearchClients = () => {
 
     const handleUpdate = (e) => {
         e.preventDefault();
-        console.log("Submitted roleFieldsData:", transformedJsonWithClientId);
+        //console.log("Submitted roleFieldsData:", transformedJsonWithClientId);
 
         // Prepare API endpoint URL
         const apiUrl = API_BASE_URL+"/updateclientinfo/"+clientId+"/"+roleId;
@@ -166,7 +166,7 @@ const SearchClients = () => {
             if (response.ok) {
                 setEditArea(false);
                 handleViewDetails(clientId)
-                console.log('Role fields data updated successfully');
+                //console.log('Role fields data updated successfully');
                 // Optionally, handle success scenario (e.g., show success message)
             } else {
                 throw new Error('Failed to update role fields data');
