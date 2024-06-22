@@ -31,6 +31,8 @@ const ClientSettings = () => {
     const [required, setRequired] = useState(false)
     const [codesetLinked, setCodesetLinked] = useState("")
     const [sequence, setSequence] = useState("")
+    const [infoFound, setInfoFound] = useState("")
+    const [infoValueExist,setInfoValueExist]=useState(false)
     //const[isChecked, setisChecked]=useState(false)
     const navigate = useNavigate()
     const validate = () => {
@@ -41,11 +43,13 @@ const ClientSettings = () => {
             .then((response) => response.json())
             .then(data => {
                 setCodesets(data)
-              //  console.log("All Roles"+data)
+                //console.log(data)
+                
+              
             })
     }, [])
     useEffect(() => {
-
+ 
     }, [codesets])
 
 
@@ -122,6 +126,7 @@ const ClientSettings = () => {
         SetErrorOccured(false)
         setDisabledDelete(true)
         setDisabled(true)
+        setInfoValueExist(false)
     }
     const handleAddField = (cs_id) => {
         setDisabled(false);
@@ -135,10 +140,11 @@ const ClientSettings = () => {
         setRoleid(cs_id)
         SetErrorOccured(false)
         setDisabledDelete(false)
+        setInfoValueExist(false)
         fetch(API_BASE_URL + "/getrolefieldsbyid/" + cs_id)
         .then((response) => response.json())
         .then(data => {
-            console.log("Data Length "+data.length)
+            //console.log("Data Length "+data.length)
             if (data.length > 0) {
                 const maxSeq = Math.max(...data.map(a => a.sequence));
                 const max = Math.max(...data.map(a => a.fieldId));
@@ -219,27 +225,47 @@ const ClientSettings = () => {
         }
         setDisabledEdit(true)
     }
-    const handleCodeDelete = (roleId, fieldId) => {
-        if (fieldId) {
-            fetch(API_BASE_URL + "/deleteroleField/" + roleId + "/" + fieldId, {
-                method: 'DELETE'
-            }).then((response) => {
-                if (response.ok) {
-                    console.log("Code deleted successifully");
-                    HandleItemClick(roleId);
+    const handleCodeDelete = async (roleId, fieldId) => {
+        try {
+            const response = await fetch(API_BASE_URL + "/getAllClientRolesInfobyinfoId/" + fieldId);
+    
+            if (response.ok) {
+                const text = await response.text();
+                const data = text ? JSON.parse(text) : null;
+    
+                if (data && data.length > 0) {  // Assuming data is an array
+                    //console.log("Info linked to this field. Cannot delete.");
+                    //window.alert("Info linked to this field. Cannot delete.");
+                    setInfoValueExist(true)
+                    // Optionally, you can set some state to display a message to the user
+                    // setInfoFound(data); or set some other state to show the message
+                    return;
                 }
-                else {
+            } else {
+                console.log("No Data found or Error fetching data");
+            }
+    
+            // If no info linked, proceed to delete
+            if (fieldId) {
+                const deleteResponse = await fetch(API_BASE_URL + "/deleteroleField/" + roleId + "/" + fieldId, {
+                    method: 'DELETE'
+                });
+    
+                if (deleteResponse.ok) {
+                    console.log("Code deleted successfully");
+                    HandleItemClick(roleId);
+                } else {
                     console.error("Failed to delete Code");
                 }
-            }).catch((error) => {
-                console.error("Error deleting user:", error);
-            });
+            } else {
+                setDisabledDelete(true);
+            }
+        } catch (error) {
+            console.error("Error:", error);
         }
-        else {
-            setDisabledDelete(true)
-        }
-        
-    }
+    };
+    
+    
     return (
         <div className="codes">
             <div className="codescontainer">
@@ -308,6 +334,7 @@ const ClientSettings = () => {
                     <div className="addedit">
                         <div className='top'>
                             <div className="header">
+                                {infoValueExist &&<div><p class="text-danger">Client Info linked to this field. Cannot delete.</p></div>}
                             </div>
                             <div className="action">
                                 <ControlPointIcon className='icon add' onClick={() => { handleAddField(selectedcodesetid) }} />
@@ -349,10 +376,11 @@ const ClientSettings = () => {
                                         <label>Link Reference</label>
                                         <select disabled={disabled} value={codesetLinked || ""} required onChange={e => setCodesetLinked(e.target.value)} >
                                             <option value="">----select---</option>
+                                           
 
 
                                             {codesets.map(codeset => (
-                                                <option value={codeset.codeseId}>{codeset.codesetName}</option>
+                                                <option value={codeset.codesetId}>{codeset.codesetName}</option>
                                             ))}
 
                                         </select>

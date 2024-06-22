@@ -25,10 +25,10 @@ const Addclient = () => {
     const navigate = useNavigate()
     const [capture_details, setCaptured] = useState(false)
     const [respondeddata, setRespondedata] = useState([])
-    const [addedClientid, setAddedClientid] = useState(0)
+    const [addedClientId, setAddedClientId] = useState(0)
     const [httpserver, setHttpServer] = useState("")
     const [selectedRole, setSelectedRole] = useState("")
-    // const [clientid,setClientid]=useState(null)
+    // const [clientid,setClientId]=useState(null)
     const [roleId, setroleId] = useState([])
     const [selected, setSelected] = useState();
     const [rolefields, setRoleFields] = useState([])
@@ -87,11 +87,12 @@ const Addclient = () => {
     const handleSelect = (event) => {
         const selectedIndex = event.target.selectedIndex;
         const selectedRole = roles[selectedIndex];
-        setRoles(roles.filter((role) => role.id !== selectedRole.id));
+
+        setRoles(roles.filter((role) => role.codeId !== selectedRole.codeId));
         setSelectedRoles([...selectedRoles, selectedRole]);
         //console.log(selectedRoles)
         roleId.map(roleId =>
-            fetch(API_BASE_URL + "/getrolefieldsbyid/" + selectedRole.id)
+            fetch(API_BASE_URL + "/getrolefieldsbyid/" + selectedRole.codeId)
                 .then(response => response.json())
                 .then(results => {
                     setRoleFields(results)
@@ -123,7 +124,7 @@ const Addclient = () => {
     const handleDeselect = (event) => {
         const selectedIndex = event.target.selectedIndex;
         const deselectedRole = selectedRoles[selectedIndex];
-        setSelectedRoles(selectedRoles.filter((role) => role.id !== deselectedRole.id));
+        setSelectedRoles(selectedRoles.filter((role) => role.codeId !== deselectedRole.codeId));
         setRoles([...roles, deselectedRole]);
         setRoleFieldsData({})
     };
@@ -178,7 +179,7 @@ const Addclient = () => {
         const newclient = {
             clientType, title, firstName, surname, companyName, active
         }
-        if (addedClientid === 0) {
+        if (addedClientId === 0) {
             if ((clientType === 1 && (title !== "" && firstName !== "" && surname !== "")) || (clientType === 2 && (companyName !== ""))) {
                 setCaptured(false)
 
@@ -205,7 +206,7 @@ const Addclient = () => {
                         //console.log(data);
                         setRespondedata(data)
                         const clientId = data.id
-                        setAddedClientid(clientId)
+                        setAddedClientId(clientId)
 
                         const infos = {
                             "id": 0,
@@ -222,8 +223,7 @@ const Addclient = () => {
                             clientId: infos.clientId,
                             roleId: roleId
                         }));
-                        const transformedJsonWithClientId = transformedJson.map(obj => ({ ...obj, clientid: infos.clientId }));
-                        console.log(transformedJsonWithClientId)
+                        const transformedJsonWithClientId = transformedJson.map(obj => ({ ...obj, clientId: infos.clientId }));
                        
 
                         try {
@@ -278,7 +278,7 @@ const Addclient = () => {
                         }
     
                         )*/
-                        //console.log("ClientID:"+clientid)
+                        //console.log("ClientId:"+clientid)
 
 
                 // const roleinfo=[clientid,roleId]
@@ -469,7 +469,7 @@ const Addclient = () => {
                     <div className="addbutton">
 
 
-                        <div className="div">Client ID:{addedClientid}</div>
+                        <div className="div">Client ID:{addedClientId}</div>
                         <div className="div"><button type='submit' onClick={handleSubmit}>Add Client</button></div>
 
 
