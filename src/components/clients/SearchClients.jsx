@@ -187,7 +187,12 @@ const SearchClients = () => {
             <div className="formcontainer">
                 <form onSubmit={handleSearch}>
                     <div className="search">
-                        <input type='text' placeholder='Search ...' onChange={(e) => setSearchValue(e.target.value)} />
+                        <input type='text' placeholder='Search ...' onChange={(e) => {
+                            setViewDetailsSection(false)
+                            setSearchExist(false)
+                            setCompanyExist(false)
+                            setEditArea(false)
+                            setSearchValue(e.target.value)}} />
                         <SearchIcon className='icon' onClick={handleSearch} />
                     </div>
                     <div className="searchresults">
