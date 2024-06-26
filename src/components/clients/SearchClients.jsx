@@ -31,6 +31,7 @@ const SearchClients = () => {
     const [addRoleClientId, setAddRoleClientId] = useState("")
     const [addRoleSection, setAddRoleSection] = useState(false)
     const [roleFields, setRoleFields] = useState([])
+    const [foundRoles, setFoundRoles] = useState([])
     useEffect(() => {
         fetch(API_BASE_URL + "/getAllCodes")
             .then((response) => response.json())
@@ -63,6 +64,7 @@ const SearchClients = () => {
 
         //setViewDetailsSection(true);
         setEditArea(false);
+       
         fetch(API_BASE_URL + "/getclientbyid/" + searchvalue)
             .then((response) => response.json())
             .then(data => {
@@ -72,11 +74,13 @@ const SearchClients = () => {
                 const clienttype = data[0]?.clientType;
                 if (clientid) {
                     if (clienttype === 1) {
+                        setClientId(clientId)
                         setSearchExist(true);
                         setCompanyExist(false);
                         handleViewDetails(clientid)
                         setAddRoleClientId(clientid)
                     } else {
+                        setClientId(clientId)
                         setSearchExist(false);
                         setCompanyExist(true);
                         handleViewDetails(clientid)
@@ -130,6 +134,7 @@ const SearchClients = () => {
             .then(data => {
                 setClientInfo(data);
                 setViewDetailsSection(true);
+                
                 // Initialize roleFieldsData with fetched client info
                 const initialRoleFieldsData = data.reduce((acc, field) => {
                     acc[field.roleId] = {
@@ -139,8 +144,22 @@ const SearchClients = () => {
                     return acc;
                 }, {});
                 setRoleFieldsData(initialRoleFieldsData);
+
             }).catch(error => {
+           
                 setClientInfo([]);
+                fetch(API_BASE_URL + "/getclientroles/" + clientid)
+                .then(response=>response.json())
+                .then(data=>{
+                    setFoundRoles(data)
+                    setAddRole(false)
+                    setEditArea(true)
+
+                }).catch(error =>{
+                    setAddRole(true)
+                })
+                
+                
                 setViewDetailsSection(false);
             });
     };
@@ -196,7 +215,7 @@ const SearchClients = () => {
 
     const handleUpdate = (e) => {
         e.preventDefault();
-       console.log("Submitted roleFieldsData:", transformedJsonWithClientId);
+       //console.log("Submitted roleFieldsData:", transformedJsonWithClientId);
 
         // Prepare API endpoint URL
         const apiUrl = API_BASE_URL + "/updateclientinfo/" + clientId + "/" + roleId;
@@ -281,6 +300,11 @@ const SearchClients = () => {
         } catch (error) {
             console.error("Could Not add the Roles :" + error)
         }
+        setAddRoleSection(false)
+        setViewDetailsButton(true)
+        setAddRole(false)
+        
+        
 
 
     }

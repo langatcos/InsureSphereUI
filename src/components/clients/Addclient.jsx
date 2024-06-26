@@ -182,6 +182,7 @@ const Addclient = () => {
         if (addedClientId === 0) {
             if ((clientType === 1 && (title !== "" && firstName !== "" && surname !== "")) || (clientType === 2 && (companyName !== ""))) {
                 setCaptured(false)
+       
 
 
                 fetch(API_BASE_URL + "/addclients", {
@@ -412,7 +413,7 @@ const Addclient = () => {
                             </div>
                             <div className="selectedbox">
                                 <label>Selected Options</label>
-                                <select multiple={true} value={[]} onChange={handleDeselect}>
+                                <select multiple={true} value={[]} onChange={handleDeselect} required>
                                     {selectedRoles.map((role) => (
                                         <option key={role.id} value={role.codeId}>
                                             {role.description}
