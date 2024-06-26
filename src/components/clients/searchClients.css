@@ -1,0 +1,30 @@
+.selections{
+    display: flex;
+    margin: 5px 5px;
+    border-radius: 5px;
+    width: 48%;
+    height: 300px;
+
+
+}
+.selectbox{
+    width: 40%;
+    height: 100%;
+}
+select{
+background: 10px;
+height:80%;
+width: 90%;
+}
+.icon{
+    width: 10%;
+    margin-right: 10px;
+
+  }
+
+  .selectedbox{
+                    
+    margin-left: 10px;
+    width: 40%;
+    
+  }
