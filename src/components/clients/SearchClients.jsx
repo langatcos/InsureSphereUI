@@ -5,7 +5,8 @@ import './searchClients.css';
 import '../../css/bootstrap/dist/css/bootstrap.min.css';
 import './addclient.scss';
 import SearchIcon from '@mui/icons-material/Search';
-
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 const SearchClients = () => {
     const [searchvalue, setSearchValue] = useState("");
     const [searchresult, setSearchResult] = useState([]);
@@ -32,6 +33,7 @@ const SearchClients = () => {
     const [addRoleSection, setAddRoleSection] = useState(false)
     const [roleFields, setRoleFields] = useState([])
     const [foundRoles, setFoundRoles] = useState([])
+    const [dob,setDob]=useState("")
     useEffect(() => {
         fetch(API_BASE_URL + "/getAllCodes")
             .then((response) => response.json())
@@ -59,12 +61,8 @@ const SearchClients = () => {
 
     const handleSearch = (e) => {
         e.preventDefault();
-
-
-
         //setViewDetailsSection(true);
         setEditArea(false);
-       
         fetch(API_BASE_URL + "/getclientbyid/" + searchvalue)
             .then((response) => response.json())
             .then(data => {
@@ -134,7 +132,7 @@ const SearchClients = () => {
             .then(data => {
                 setClientInfo(data);
                 setViewDetailsSection(true);
-                
+
                 // Initialize roleFieldsData with fetched client info
                 const initialRoleFieldsData = data.reduce((acc, field) => {
                     acc[field.roleId] = {
@@ -146,20 +144,20 @@ const SearchClients = () => {
                 setRoleFieldsData(initialRoleFieldsData);
 
             }).catch(error => {
-           
+
                 setClientInfo([]);
                 fetch(API_BASE_URL + "/getclientroles/" + clientid)
-                .then(response=>response.json())
-                .then(data=>{
-                    setFoundRoles(data)
-                    setAddRole(false)
-                    setEditArea(true)
+                    .then(response => response.json())
+                    .then(data => {
+                        setFoundRoles(data)
+                        setAddRole(false)
+                        setEditArea(true)
 
-                }).catch(error =>{
-                    setAddRole(true)
-                })
-                
-                
+                    }).catch(error => {
+                        setAddRole(true)
+                    })
+
+
                 setViewDetailsSection(false);
             });
     };
@@ -168,9 +166,11 @@ const SearchClients = () => {
 
         setAddRoleSection(true)
     };
-    const handleRoleInfoFields = (e, clientId, roleId) => {
+    const handleRoleInfoFields = (e, clientId, roleId,date) => {
         const { name, value, type, checked } = e.target;
         const newValue = type === 'checkbox' ? checked : value;
+        console.log("Selected date:", date);
+        setDob(date);
 
         setClientId(clientId)
         setRoleId(roleId)
@@ -184,7 +184,7 @@ const SearchClients = () => {
         }));
     };
 
-   
+
 
     const transformedJson = [];
 
@@ -215,7 +215,7 @@ const SearchClients = () => {
 
     const handleUpdate = (e) => {
         e.preventDefault();
-       //console.log("Submitted roleFieldsData:", transformedJsonWithClientId);
+        //console.log("Submitted roleFieldsData:", transformedJsonWithClientId);
 
         // Prepare API endpoint URL
         const apiUrl = API_BASE_URL + "/updateclientinfo/" + clientId + "/" + roleId;
@@ -303,8 +303,8 @@ const SearchClients = () => {
         setAddRoleSection(false)
         setViewDetailsButton(true)
         setAddRole(false)
-        
-        
+
+
 
 
     }
@@ -424,8 +424,8 @@ const SearchClients = () => {
                 )
 
                 }
-              
-                
+
+
                 {editarea && (
                     <div className='editarea'>
                         <table className='table table-sm'>
@@ -500,6 +500,21 @@ const SearchClients = () => {
                                                                 value={fieldValue}
                                                             />
                                                         )}
+                                                        {console.log(typeof new Date(fieldValue), new Date(fieldValue))}
+                                                        {field.inputControl === 'DatePicker' && (
+                                                         
+
+
+                                                    <DatePicker
+                                                         name={field.fieldId} // Optional: If needed for your use case
+                                                         onChange={(date) => handleRoleInfoFields(date, role.clientId, field.roleId)}
+                                                         dateFormat="yyyy-MM-dd"
+                                                         className="form-control"
+                                                         selected={fieldValue} // Ensure fieldValue is a valid date string or Date object
+                                                     />
+
+                                                        )}
+
                                                     </td>
                                                 </tr>
                                             );

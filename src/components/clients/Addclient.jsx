@@ -3,10 +3,13 @@ import React, { useEffect, useState } from 'react'
 import './addclient.scss'
 import { useNavigate } from 'react-router-dom'
 import { format } from 'date-fns';
-import { DayPicker } from 'react-day-picker';
+
 import '../../externalcomponents/react-day-picker/dist/style.css'
 import { API_BASE_URL } from '../../configs/Config';
 //import 'react-day-picker/dist/style.css';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+
 const Addclient = () => {
     const [codes, setCodes] = useState([])
     const [titleArray, setTitle] = useState([])
@@ -38,17 +41,17 @@ const Addclient = () => {
     if (selected) {
         footer = <p>You picked {format(selected, 'PP')}.</p>;
     }
-   /* useEffect(() => {
-        fetch(API_BASE_URL + "/getsystemsettingbyid/2")
-            .then((response) => response.json())
-            .then(data => {
-                setHttpServer(data)
-            })
-
-    }, [])
-    useEffect(() => {
-
-    }, [httpserver])*/
+    /* useEffect(() => {
+         fetch(API_BASE_URL + "/getsystemsettingbyid/2")
+             .then((response) => response.json())
+             .then(data => {
+                 setHttpServer(data)
+             })
+ 
+     }, [])
+     useEffect(() => {
+ 
+     }, [httpserver])*/
 
     useEffect(() => {
         fetch(API_BASE_URL + "/getAllCodes")
@@ -73,7 +76,7 @@ const Addclient = () => {
 
         }
 
-      
+
     }, [codes])
 
     // console.log(selectedRoles)
@@ -81,8 +84,8 @@ const Addclient = () => {
 
     }, [titleArray], [providertypes])
     //console.log(codes)
-   // console.log(providertypes)
-   //console.log(titleArray)
+    // console.log(providertypes)
+    //console.log(titleArray)
     //console.log(title[0])
     const handleSelect = (event) => {
         const selectedIndex = event.target.selectedIndex;
@@ -182,7 +185,7 @@ const Addclient = () => {
         if (addedClientId === 0) {
             if ((clientType === 1 && (title !== "" && firstName !== "" && surname !== "")) || (clientType === 2 && (companyName !== ""))) {
                 setCaptured(false)
-       
+
 
 
                 fetch(API_BASE_URL + "/addclients", {
@@ -225,7 +228,7 @@ const Addclient = () => {
                             roleId: roleId
                         }));
                         const transformedJsonWithClientId = transformedJson.map(obj => ({ ...obj, clientId: infos.clientId }));
-                       
+
 
                         try {
 
@@ -241,15 +244,16 @@ const Addclient = () => {
                         catch (error) {
                             console.error(error);
                         }
-                        try{ 
-                           
-                        fetch(API_BASE_URL + "/addrolefieldinfo", {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify(transformedJsonWithClientId)
-                        })}catch (error) {
+                        try {
+
+                            fetch(API_BASE_URL + "/addrolefieldinfo", {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify(transformedJsonWithClientId)
+                            })
+                        } catch (error) {
                             console.error(error);
                         }
 
@@ -257,35 +261,35 @@ const Addclient = () => {
                         navigate("/clients/");
 
                     })
-/*
-                    fetch(API_BASE_URL + "/addrolefieldinfo", {
-                        method: 'PUSH',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(transformedJson)
-                    })
-                        .then(response => {
-                            if (response.ok) {
-                                return response.json(); // extract JSON from the response
-                                //window.alert("Client Created Sucessfully")
-                            }
-                            else {
-    
-                                console.log("Error Occurred")
-                            }
-                        }).catch(error => {
-                            console.log(error)
-                        }
-    
-                        )*/
-                        //console.log("ClientId:"+clientid)
+                /*
+                                    fetch(API_BASE_URL + "/addrolefieldinfo", {
+                                        method: 'PUSH',
+                                        headers: {
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify(transformedJson)
+                                    })
+                                        .then(response => {
+                                            if (response.ok) {
+                                                return response.json(); // extract JSON from the response
+                                                //window.alert("Client Created Sucessfully")
+                                            }
+                                            else {
+                    
+                                                console.log("Error Occurred")
+                                            }
+                                        }).catch(error => {
+                                            console.log(error)
+                                        }
+                    
+                                        )*/
+                //console.log("ClientId:"+clientid)
 
 
                 // const roleinfo=[clientid,roleId]
                 // 
 
-                
+
 
             }
             else {
@@ -375,13 +379,17 @@ const Addclient = () => {
                             <div className="formitem">
                                 <div className="itemlabel"><label>DOB</label></div>
                                 <div className="iteminput">
-                                    <input type="text" disabled={disabledClient} onChange={(e) => { setDob(e.target.value) }} />
-                                    {/*<DayPicker
-                                        mode="single"
-                                        selected={selected}
-                                        onSelect={setSelected}
-                                        footer={footer}
-                                        />*/}
+
+
+
+
+                                    <DatePicker
+                                        selected={dob}
+                                        onChange={(date) => setDob(date)}
+                                        dateFormat="yyyy-MM-dd"
+                                        className="form-control"
+                                        disabled={disabledClient}
+                                    />
                                 </div>
 
                             </div>
@@ -437,9 +445,8 @@ const Addclient = () => {
                                                     <label key={field.fieldId}>{field.infoDescription}: </label>
                                                 </div>
                                                 <div className='iteminput'>
-                                                    {field.inputControl === "text" && (
-                                                        <input type='text' name={field.fieldId} required={field.required ? true : false} onChange = {e => handleRoleInfoFields(e, field.roleId)} />
-                                                    )}
+
+                                                    <input type={field.inputControl} name={field.fieldId} required={field.required ? true : false} onChange={e => handleRoleInfoFields(e, field.roleId)} />
                                                     {field.inputControl === 'select' && (
                                                         <select name={field.fieldId} onChange={e => handleRoleInfoFields(e, field.roleId)}>
                                                             <option value=" ">---select---</option>
@@ -451,15 +458,24 @@ const Addclient = () => {
                                                             }
                                                         </select>
                                                     )}
-                                                    {field.inputControl === 'checkbox' && (
-                                                        <input type="checkbox" name={field.fieldId} className='checkbox' onChange={e => handleRoleInfoFields(e, field.roleId)} />
-                                                    )}
-                                                    {field.inputControl === 'radio' && (
-                                                        <input type="radio" name={field.fieldId} onChange={e => handleRoleInfoFields(e, field.roleId)} />
-                                                    )}
-                                                     {field.inputControl === 'textarea' && (
-                                                          <textarea class="large-textarea" placeholder="Enter your text here..."  name={field.fieldId} onChange={e => handleRoleInfoFields(e, field.roleId)}></textarea>
 
+
+                                                    {field.inputControl === 'textarea' && (
+                                                        <textarea class="large-textarea" placeholder="Enter your text here..." name={field.fieldId} onChange={e => handleRoleInfoFields(e, field.roleId)}></textarea>
+
+                                                    )}
+                                                    
+
+                                                    {field.inputControl === 'DatePicker' && (
+
+                                                        <DatePicker
+                                                            selected={field.fieldId}
+                                                            onChange={e => handleRoleInfoFields(e, field.roleId)}
+                                                            dateFormat="yyyy-MM-dd"
+                                                            className="form-control"
+                                                            disabled={disabledClient}
+                                                        />
+                                                        
                                                     )}
                                                 </div>
 
