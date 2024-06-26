@@ -456,6 +456,10 @@ const Addclient = () => {
                                                     {field.inputControl === 'radio' && (
                                                         <input type="radio" name={field.fieldId} onChange={e => handleRoleInfoFields(e, field.roleId)} />
                                                     )}
+                                                     {field.inputControl === 'textarea' && (
+                                                          <textarea class="large-textarea" placeholder="Enter your text here..."  name={field.fieldId} onChange={e => handleRoleInfoFields(e, field.roleId)}></textarea>
+
+                                                    )}
                                                 </div>
 
                                             </div>

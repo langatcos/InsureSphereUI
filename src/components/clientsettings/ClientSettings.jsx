@@ -33,6 +33,7 @@ const ClientSettings = () => {
     const [sequence, setSequence] = useState("")
     const [infoFound, setInfoFound] = useState("")
     const [infoValueExist,setInfoValueExist]=useState(false)
+    const [inputControlType,setInputControlType]=useState("false")
     //const[isChecked, setisChecked]=useState(false)
     const navigate = useNavigate()
     const validate = () => {
@@ -63,6 +64,15 @@ const ClientSettings = () => {
             .then((response) => response.json())
             .then(roles => {
                 setItems(roles)
+            }).catch(error => console.error(error));
+    }, [])
+
+    useEffect(() => {
+        fetch(API_BASE_URL + "/getCodesByCodesetId/16")
+            .then((response) => response.json())
+            .then(type => {
+                setInputControlType(type)
+               // console.log(type)
             }).catch(error => console.error(error));
     }, [])
 
@@ -360,11 +370,14 @@ const ClientSettings = () => {
                                         <label>Input Control</label>
                                         <select disabled={disabled} value={inputControl} required onChange={e => setInputControl(e.target.value)} >
                                            <option value="">---select----</option>
+                                          
+                                           {inputControlType.map(type=>(
+                                                <option value={type.description}>{type.description}</option>
 
-                                            <option value="text">Text</option>
-                                            <option value="select">Select(Combobox)</option>
-                                            <option value="checkbox">Checkbox</option>
-                                            <option value="radio">Radio</option>
+                                          ) )}
+
+                                        
+                                        
 
                                         </select>
                                         <label>Sequence</label>
