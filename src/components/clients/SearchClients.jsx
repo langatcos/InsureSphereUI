@@ -367,11 +367,11 @@ const SearchClients = () => {
                         }} />
                         <SearchIcon className='icon' onClick={handleSearch} />
                     </div>
-                    <TabContext value={value}>
+                    {(searchexist || companyexist) &&<TabContext value={value}>
                         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                             <TabList onChange={handleTabChange} aria-label="lab API tabs example">
                                 <Tab label="Basic Info" value="1" />
-                                <Tab label="Relationships" value="2" />
+                                {searchexist &&<Tab label="Relationships" value="2" />}
                                 <Tab label="Addresses" value="3" />
                                 <Tab label="Bank Accounts" value="4" />
                             </TabList>
@@ -678,7 +678,7 @@ const SearchClients = () => {
                         <TabPanel value="2"><Relationships  clientId={searchvalue}/></TabPanel>
                         <TabPanel value="3"> {console.log("This is the clientId"+ searchvalue)}</TabPanel>
                         <TabPanel value="4">Item Four</TabPanel>
-                    </TabContext>
+                    </TabContext>}
 
 
                     
