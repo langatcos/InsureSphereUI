@@ -145,17 +145,30 @@ const Addclient = () => {
     }, [selectedRoles], [roleId])
     // console.log(roleId)
 
-    const handleRoleInfoFields = (e, roleId) => {
-        const { name, value } = e.target;
-        setRoleFieldsData(roleFieldsData => ({
-            ...roleFieldsData,
-            [roleId]: {
-                ...roleFieldsData[roleId],
-                [name]: value,
-            },
-        }));
+    const handleRoleInfoFields = (e, roleId, isDate = false, fieldId = null) => {
+        if (isDate) {
+            // Handling DatePicker event
+            const value = e; // e is the selected date from DatePicker
+            const name = fieldId;
+            setRoleFieldsData(roleFieldsData => ({
+                ...roleFieldsData,
+                [roleId]: {
+                    ...roleFieldsData[roleId],
+                    [name]: value,
+                },
+            }));
+        } else {
+            // Handling standard input events
+            const { name, value } = e.target;
+            setRoleFieldsData(roleFieldsData => ({
+                ...roleFieldsData,
+                [roleId]: {
+                    ...roleFieldsData[roleId],
+                    [name]: value,
+                },
+            }));
+        }
     };
-
     //console.log(roleFieldsData)
 
     const transformedJson = [];
@@ -445,8 +458,18 @@ const Addclient = () => {
                                                     <label key={field.fieldId}>{field.infoDescription}: </label>
                                                 </div>
                                                 <div className='iteminput'>
+                                                    {field.inputControl === 'text' && (
 
-                                                    <input type={field.inputControl} name={field.fieldId} required={field.required ? true : false} onChange={e => handleRoleInfoFields(e, field.roleId)} />
+                                                        <input type={field.inputControl} name={field.fieldId} required={field.required ? true : false} onChange={e => handleRoleInfoFields(e, field.roleId)} />
+                                                    )}
+                                                    {field.inputControl === 'radio' && (
+
+                                                        <input type={field.inputControl} name={field.fieldId} required={field.required ? true : false} onChange={e => handleRoleInfoFields(e, field.roleId)} />
+                                                    )}
+                                                    {field.inputControl === 'checkbox' && (
+
+                                                        <input type={field.inputControl} name={field.fieldId} required={field.required ? true : false} onChange={e => handleRoleInfoFields(e, field.roleId)} />
+                                                    )}
                                                     {field.inputControl === 'select' && (
                                                         <select name={field.fieldId} onChange={e => handleRoleInfoFields(e, field.roleId)}>
                                                             <option value=" ">---select---</option>
@@ -464,18 +487,19 @@ const Addclient = () => {
                                                         <textarea class="large-textarea" placeholder="Enter your text here..." name={field.fieldId} onChange={e => handleRoleInfoFields(e, field.roleId)}></textarea>
 
                                                     )}
-                                                    
+
 
                                                     {field.inputControl === 'DatePicker' && (
-
                                                         <DatePicker
-                                                            selected={field.fieldId}
-                                                            onChange={e => handleRoleInfoFields(e, field.roleId)}
+                                                            name={field.fieldId} // Optional: If needed for your use case
+                                                            onChange={date => handleRoleInfoFields(date, field.roleId, true, field.fieldId)}
                                                             dateFormat="yyyy-MM-dd"
                                                             className="form-control"
-                                                            disabled={disabledClient}
+                                                            selected={roleFieldsData[field.roleId]?.[field.fieldId] || null} // Ensure fieldValue is a valid date string or Date object
+                                                            showYearDropdown
+                                                            yearDropdownItemNumber={60} // Show 60 years in the dropdown (optional)
+                                                            scrollableYearDropdown
                                                         />
-                                                        
                                                     )}
                                                 </div>
 

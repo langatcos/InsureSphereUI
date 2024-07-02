@@ -6,7 +6,13 @@ import '../../css/bootstrap/dist/css/bootstrap.min.css';
 import './addclient.scss';
 import SearchIcon from '@mui/icons-material/Search';
 import DatePicker from 'react-datepicker';
+import TabList from '@mui/lab/TabList';
+import TabPanel from '@mui/lab/TabPanel';
+import Tab from '@mui/material/Tab';
+import { TabContext } from '@mui/lab'
+import { Box } from '@mui/material'
 import 'react-datepicker/dist/react-datepicker.css';
+import Relationships from './Relationships';
 const SearchClients = () => {
     const [searchvalue, setSearchValue] = useState("");
     const [searchresult, setSearchResult] = useState([]);
@@ -33,7 +39,15 @@ const SearchClients = () => {
     const [addRoleSection, setAddRoleSection] = useState(false)
     const [roleFields, setRoleFields] = useState([])
     const [foundRoles, setFoundRoles] = useState([])
-    const [dob,setDob]=useState("")
+    const [dob, setDob] = useState("")
+    const [changedFirstName, setChangedFirstName] = useState("");
+    const [changedTitle, setChangedTitle] = useState("");
+    const [changedSurname, setChangedSurname] = useState("");
+    const [changedCompanyName, setChangedCompanyName] = useState("")
+    const [existingClientId, setExistingClientId]=useState("")
+
+
+    
     useEffect(() => {
         fetch(API_BASE_URL + "/getAllCodes")
             .then((response) => response.json())
@@ -77,12 +91,14 @@ const SearchClients = () => {
                         setCompanyExist(false);
                         handleViewDetails(clientid)
                         setAddRoleClientId(clientid)
+                        setExistingClientId(clientId)
                     } else {
                         setClientId(clientId)
                         setSearchExist(false);
                         setCompanyExist(true);
                         handleViewDetails(clientid)
                         setAddRoleClientId(clientid)
+                        setExistingClientId(clientId)
                     }
                     setNoResults(false);
                 } else {
@@ -166,24 +182,36 @@ const SearchClients = () => {
 
         setAddRoleSection(true)
     };
-    const handleRoleInfoFields = (e, clientId, roleId,date) => {
-        const { name, value, type, checked } = e.target;
-        const newValue = type === 'checkbox' ? checked : value;
-        console.log("Selected date:", date);
-        setDob(date);
+    const handleRoleInfoFields = (input, clientId, roleId, fieldId, isDate = false) => {
+        let name, newValue;
 
-        setClientId(clientId)
-        setRoleId(roleId)
+
+        if (isDate) {
+            // Handle the date input case
+            name = fieldId;
+            newValue = input;
+            setDob(input);
+        } else if (typeof input === 'object' && input.target) {
+            // Handle the event input case (for regular input fields)
+            const { name: eventName, value: eventValue, type, checked } = input.target;
+            name = eventName;
+            newValue = type === 'checkbox' ? checked.toString() : eventValue;
+        } else {
+            // Handle direct value assignment (for special cases, if any)
+            name = fieldId;
+            newValue = input;
+        }
+
+        setClientId(clientId);
+        setRoleId(roleId);
         setRoleFieldsData(roleFieldsData => ({
             ...roleFieldsData,
             [roleId]: {
                 ...roleFieldsData[roleId],
                 [name]: newValue,
-
             },
         }));
     };
-
 
 
     const transformedJson = [];
@@ -316,6 +344,11 @@ const SearchClients = () => {
 
     }, [selectedRoles], [selectedRoleId])
 
+    const [value, setValue] = useState("1");
+    const handleTabChange = (event, newValue) => {
+        setValue(newValue);
+    };
+
     return (
         <div className='searchClients'>
             Search client by ClientNo
@@ -334,7 +367,17 @@ const SearchClients = () => {
                         }} />
                         <SearchIcon className='icon' onClick={handleSearch} />
                     </div>
-                    <div className="searchresults">
+                    <TabContext value={value}>
+                        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                            <TabList onChange={handleTabChange} aria-label="lab API tabs example">
+                                <Tab label="Basic Info" value="1" />
+                                <Tab label="Relationships" value="2" />
+                                <Tab label="Addresses" value="3" />
+                                <Tab label="Bank Accounts" value="4" />
+                            </TabList>
+                        </Box>
+                        <TabPanel value="1">
+                        <div className="searchresults">
                         {searchexist && (
                             <table className='table table-hover table-sm table-striped'>
                                 <thead>
@@ -392,11 +435,81 @@ const SearchClients = () => {
                             </table>
                         )}
                     </div>
-                    {noresults && <div className="noresults">No Results found for value entered</div>}
-                    {error && <div className="error">Error Occurred, Contact your system administrator</div>}
-                </form>
-            </div>
-            <div className='results'>
+                    <div className='results'>
+
+                {editarea && <div> Basic Info
+                    {searchexist && <table className='table table-hover table-sm table-striped'>
+                        <thead>
+                            <tr>
+                                <th>ClientId</th>
+                                <th>Title</th>
+                                <th>FirstName</th>
+                                <th>Surname</th>
+
+
+                            </tr>
+
+                        </thead>
+                        <tbody>
+
+                            {searchresult.map(info => (
+                                <tr>
+                                    <td>{info.id}</td>
+                                    <td>
+                                        <select name="title" className='form-control' value={changedTitle || info.title} onChange={e => setChangedTitle(e.target.value)}>
+                                            <option value=" ">---select---</option>
+
+                                            {codes.filter(code => code.codesetLinked === 5).map(code => (
+                                                <option key={code.description} value={code.description}>
+                                                    {code.description}
+                                                </option>
+                                            ))}
+                                        </select>
+
+
+                                    </td>
+                                    <td>
+                                        <input type='text' className='form-control' value={info.firstName} name='firstName' required onChange={e => setChangedFirstName(e.target.value)} />
+
+                                    </td>
+                                    <td>
+                                        <input type='text' className='form-control' value={info.surname} name='firstName' required onChange={e => setChangedSurname(e.target.value)} />
+                                    </td>
+
+                                </tr>
+                            ))}
+
+                        </tbody>
+                    </table>}
+                    {companyexist && <table className='table table-hover table-sm table-striped'>
+                        <thead>
+                            <tr>
+                                <th>ClientId</th>
+
+                                <th>Company Name</th>
+
+                            </tr>
+
+                        </thead>
+                        <tbody>
+
+                            {searchresult.map(info => (
+                                <tr>
+                                    <td>{info.id}</td>
+                                    <td>
+                                        <input type='text' className='form-control'
+                                            value={changedCompanyName || info.companyName} name='companyName' required
+                                            onChange={e => handleRoleInfoFields(e, info.clientId, null, 'companyName')} />
+
+
+                                    </td>
+
+                                </tr>
+                            ))}
+
+                        </tbody>
+                    </table>}
+                </div>}
                 {viewdetailssection && (
                     <div>
                         <table className='table table-hover table-sm table-striped'>
@@ -500,21 +613,18 @@ const SearchClients = () => {
                                                                 value={fieldValue}
                                                             />
                                                         )}
-                                                        {console.log(typeof new Date(fieldValue), new Date(fieldValue))}
                                                         {field.inputControl === 'DatePicker' && (
-                                                         
-
-
-                                                    <DatePicker
-                                                         name={field.fieldId} // Optional: If needed for your use case
-                                                         onChange={(date) => handleRoleInfoFields(date, role.clientId, field.roleId)}
-                                                         dateFormat="yyyy-MM-dd"
-                                                         className="form-control"
-                                                         selected={fieldValue} // Ensure fieldValue is a valid date string or Date object
-                                                     />
-
+                                                            <DatePicker
+                                                                name={field.fieldId}
+                                                                onChange={(date) => handleRoleInfoFields({ target: { name: field.fieldId, value: date } }, role.clientId, field.roleId)}
+                                                                dateFormat="yyyy-MM-dd"
+                                                                className="form-control"
+                                                                selected={fieldValue ? new Date(fieldValue) : null}
+                                                                showYearDropdown
+                                                                yearDropdownItemNumber={60}
+                                                                scrollableYearDropdown
+                                                            />
                                                         )}
-
                                                     </td>
                                                 </tr>
                                             );
@@ -564,6 +674,19 @@ const SearchClients = () => {
 
 
             </div>
+                        </TabPanel>
+                        <TabPanel value="2"><Relationships  clientId={searchvalue}/></TabPanel>
+                        <TabPanel value="3"> {console.log("This is the clientId"+ searchvalue)}</TabPanel>
+                        <TabPanel value="4">Item Four</TabPanel>
+                    </TabContext>
+
+
+                    
+                    {noresults && <div className="noresults">No Results found for value entered</div>}
+                    {error && <div className="error">Error Occurred, Contact your system administrator</div>}
+                </form>
+            </div>
+            
 
 
 
