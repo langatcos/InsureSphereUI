@@ -1,0 +1,31 @@
+.client{
+    display: flex;
+    flex-direction: column;
+}
+.buttoncontainer{
+    width: 60%;
+    display: flex;
+    border-radius: 5px;
+    box-shadow: 2px -12px 75px -7px rgba(0,0,0,0.16) inset;
+    -webkit-box-shadow: 2px -12px 75px -7px rgba(0,0,0,0.16) inset;
+    -moz-box-shadow: 2px -12px 75px -7px rgba(0,0,0,0.16) inset;
+}
+.addAccount{
+    color: green;
+    
+}
+.editAccount{
+    color: rgb(69, 69, 50);
+}
+.deleteAccount{
+    color: red;
+}
+.AddaccountDetailsFields{
+    margin-top: 10px;
+    width: 60%;
+
+}
+.formItem{
+    display: flex;
+
+}
