@@ -13,6 +13,7 @@ import { TabContext } from '@mui/lab'
 import { Box } from '@mui/material'
 import 'react-datepicker/dist/react-datepicker.css';
 import Relationships from './Relationships';
+import BankAccounts from './BankAccounts';
 const SearchClients = () => {
     const [searchvalue, setSearchValue] = useState("");
     const [searchresult, setSearchResult] = useState([]);
@@ -677,7 +678,7 @@ const SearchClients = () => {
                         </TabPanel>
                         <TabPanel value="2"><Relationships  clientId={searchvalue}/></TabPanel>
                         <TabPanel value="3"> {console.log("This is the clientId"+ searchvalue)}</TabPanel>
-                        <TabPanel value="4">Item Four</TabPanel>
+                        <TabPanel value="4"><BankAccounts clientId={searchvalue}/></TabPanel>
                     </TabContext>}
 
 
