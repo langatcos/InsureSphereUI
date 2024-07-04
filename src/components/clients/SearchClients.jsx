@@ -677,7 +677,7 @@ const SearchClients = () => {
             </div>
                         </TabPanel>
                         <TabPanel value="2"><Relationships  clientId={searchvalue}/></TabPanel>
-                        <TabPanel value="3"> {console.log("This is the clientId"+ searchvalue)}</TabPanel>
+                        <TabPanel value="3"> Test </TabPanel>
                         <TabPanel value="4"><BankAccounts clientId={searchvalue}/></TabPanel>
                     </TabContext>}
 

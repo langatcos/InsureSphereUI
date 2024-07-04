@@ -7,6 +7,8 @@ import Login from './pages/login/Login';
 import SystemAttributes from './pages/systemattributes/SystemAttributes';
 import Client from './pages/clients/Client';
 import Underwriting from './pages/underwriting/Underwriting';
+import Banks from './pages/Banks/Banks';
+
 
 function App() {
   return (
@@ -26,6 +28,9 @@ function App() {
         </Route>
         <Route path="underwriting">
           <Route index element={<Underwriting/>}/>
+        </Route>
+        <Route path="banks">
+          <Route index element={<Banks/>}/>
         </Route>
       </Routes>
     </Router>

@@ -11,6 +11,7 @@ import DeckOutlinedIcon from '@mui/icons-material/DeckOutlined';
 import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import Diversity1OutlinedIcon from '@mui/icons-material/Diversity1Outlined';
+import SavingsIcon from '@mui/icons-material/Savings';
 import { Link } from 'react-router-dom';
 const Sidebar = () => {
     return (
@@ -66,6 +67,12 @@ const Sidebar = () => {
                     <PaidOutlinedIcon className='icon' />
                     Accounts
                 </div>
+                <Link to="/banks" className='link'>
+                <div className="menuitem">
+                    <SavingsIcon className='icon' />
+                    Banks
+                </div>
+                </Link>
             </div>
             <div className="Highlights">
 
