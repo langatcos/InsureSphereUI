@@ -1,0 +1,14 @@
+.systemattributes{
+    display: flex;
+    flex-direction: column;
+    .systemcontainer{
+        display: flex;
+        .sidebar{
+            flex:1;
+        }
+        .systemcontents{
+         flex:7;
+        }
+    }
+    
+}
