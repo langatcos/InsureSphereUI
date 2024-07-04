@@ -2,7 +2,7 @@ const Relationships =({clientId})=>{
     console.log("This is "+clientId)
     return (
         <div className='client'>
-            This are the relationships
+            These are the relationships  
             {clientId}
           
         </div>

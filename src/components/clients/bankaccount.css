@@ -31,4 +31,9 @@
 }
 .actionholder{
     margin-left:10px;
+    
+}
+.actionholder:hover{
+    background-color: rgb(94, 94, 13);
+
 }
