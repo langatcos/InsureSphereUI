@@ -31,6 +31,7 @@ const BankSetups = () => {
     const [maxBank,setMaxBank]=useState("")
     const [addBankCode,setAddBankCode]=useState("")
     const [addBank,setAddBank]=useState("")
+    const [toEditBranchCode,setToEditBranchCode]=useState("")
     const navigate = useNavigate()
 
     const validate = () => {
@@ -118,12 +119,14 @@ const BankSetups = () => {
                 console.log("No records found")
             })
     }
-    const handleCodeEditing = (codesetId, codeId) => {
+    const handleCodeEditing = (bankCode, branchCode) => {
         setDisabledSave(true)
         SetErrorOccured(false)
         setDisabledDelete(false)
+        console.log("This"+branchCode)
+        setToEditBranchCode(branchCode)
         setAddForm(false)
-        if (codeId) {
+        if (branchCode) {
             setDisabled(false);
             setDisabledEdit(false)
         } else {
@@ -134,7 +137,6 @@ const BankSetups = () => {
         e.preventDefault()
         const bankCode=bankCodeLinked
         const newBranch = { branchCode, bankCode, bankBranch }
-       console.log(JSON.stringify(newBranch))
         if (bankBranch) {
             fetch(API_BASE_URL + "/addBankBranch", {
                 method: 'POST',
@@ -163,7 +165,8 @@ const BankSetups = () => {
         const updateBranch = {
             branchCode, bankCode, bankBranch
         }
-        const response = await fetch(API_BASE_URL + "/editcodes/" + bankCode + "/" + branchCode, {
+        console.log(JSON.stringify(updateBranch))
+        const response = await fetch(API_BASE_URL + "/editbankbranch/" + bankCode + "/" + toEditBranchCode, {
             method: 'PUT',
             headers: {
                 "content-Type": "application/json"
@@ -181,7 +184,7 @@ const BankSetups = () => {
     }
     const handleCodeDelete = (bankCode, branchCode) => {
         if (branchCode) {
-            fetch(API_BASE_URL + "/deletecodes/" + bankCode + "/" + branchCode, {
+            fetch(API_BASE_URL + "/deletebranches/" + bankCode + "/" + branchCode, {
                 method: 'DELETE'
             }).then((response) => {
                 if (response.ok) {
