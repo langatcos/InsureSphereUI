@@ -37,3 +37,9 @@
     background-color: rgb(94, 94, 13);
 
 }
+.nobankAccount{
+    color: red;
+}
+.table-active-custom {
+    background-color: #bb1717; /* Change to the desired highlight color */
+}

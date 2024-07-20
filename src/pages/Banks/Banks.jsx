@@ -11,7 +11,7 @@ import BankSetups from '../../components/banks/BankSetups'
 
 
 const Banks = () => {
-    const [value, setValue] = useState("codes");
+    const [value, setValue] = useState("banks");
 
     const handleTabChange = (event, newValue) =>{
         setValue(newValue);
@@ -26,17 +26,17 @@ const Banks = () => {
                         <TabContext value={value}>
                             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                                 <TabList onChange={handleTabChange} aria-label="lab API tabs example">
-                                    <Tab label="Codes" value="codes" />
-                                    <Tab label="System Settings" value="settings" />
+                                    <Tab label="Banks" value="banks" />
+                                    <Tab label="banks settings" value="bankssettings" />
                                     
                                 </TabList>
                             </Box>
                             
 
-                            <TabPanel value="codes" >
+                            <TabPanel value="banks" >
                                <BankSetups/>
                             </TabPanel>
-                            <TabPanel value="settings">Settings</TabPanel>
+                            <TabPanel value="bankssettings">Banks Additional Info </TabPanel>
 
 
                         </TabContext>

@@ -6,6 +6,7 @@ import './bankaccount.css'
 import React, { useEffect, useState } from 'react';
 import { API_BASE_URL } from '../../configs/Config';
 import { json } from 'react-router-dom';
+import { red } from '@mui/material/colors';
 const BankAccounts = ({ clientId }) => {
     const [accountNumbers, setAccountNumbers] = useState([])
     const [accountType, setAccountType] = useState("")
@@ -19,17 +20,22 @@ const BankAccounts = ({ clientId }) => {
     const [selectedBank, setSelectedBank] = useState("")
     const [bankBranches, setBankBranches] = useState([]);
     const [clientBankAccounts, setClientBankAccounts] = useState([]);
+    const[noBAnkAccounts,setNoBankAccounts]=useState(false)
+    const[bankAccountExist,setBankAccountExist]=useState(false)
+    const [selectedRow, setSelectedRow] = useState(null);
+
     useEffect(() => {
         fetch(API_BASE_URL + "/getClientBankaccounts/" + clientId)
             .then((response) => response.json())
             .then(data => {
                 if (Array.isArray(data)) {
                     setClientBankAccounts(data);
+                    setBankAccountExist(true)
 
 
                 }
             }).catch((error) => {
-                console.log(error);
+                setNoBankAccounts(true)
             });
     }, []);
     useEffect(() => {
@@ -84,6 +90,7 @@ const BankAccounts = ({ clientId }) => {
 
     const handleAddaccountSection = () => {
         setShowAddSection(true)
+        setNoBankAccounts(false)
     }
     const handleSubmitAccount = (e) => {
         e.preventDefault()
@@ -112,6 +119,9 @@ const BankAccounts = ({ clientId }) => {
 
     }
 
+    const handleRowClick = (index) => {
+        setSelectedRow(index);
+    };
     return (
         <div className='client'>
             <div className='buttoncontainer'>
@@ -123,7 +133,8 @@ const BankAccounts = ({ clientId }) => {
 
             </div>
             <div className='accountDetails'>
-                <table className='table table-hover table-sm table-striped'>
+            {noBAnkAccounts &&<label className='nobankAccount'>No Bank Account(s) defined for this client</label>}
+                {bankAccountExist &&<table className='table table-hover table-sm table-striped'>
                     <thead>
                         <tr>
 
@@ -138,7 +149,10 @@ const BankAccounts = ({ clientId }) => {
                     </thead>
                     <tbody>
                         {clientBankAccounts.map((accounts)=>(
-                            <tr>
+                            <tr  key={accounts.id}
+                            onClick={() => handleRowClick(accounts.id)}
+                            className={selectedRow === accounts.id ? 'table-active' : ''}
+                            style={{ cursor: 'pointer' }}>
                             <td>{accounts.accountName}</td>
                             <td>{accounts.accountType}</td>
                             <td>{accounts.accountNo}</td>
@@ -150,7 +164,7 @@ const BankAccounts = ({ clientId }) => {
                         </tr>
                         ))}
                     </tbody>
-                </table>
+                </table>}
 
 
             </div>

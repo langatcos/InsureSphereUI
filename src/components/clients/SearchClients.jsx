@@ -86,6 +86,8 @@ const SearchClients = () => {
                 const clientid = data[0]?.id;
                 const clienttype = data[0]?.clientType;
                 if (clientid) {
+                    setValue('1');
+
                     if (clienttype === 1) {
                         setClientId(clientId)
                         setSearchExist(true);
