@@ -3,7 +3,7 @@
     flex-direction: column;
 }
 .buttoncontainer{
-    width: 60%;
+    width: 100%;;
     display: flex;
     border-radius: 5px;
     box-shadow: 2px -12px 75px -7px rgba(0,0,0,0.16) inset;
@@ -12,8 +12,10 @@
 }
 .addAccount{
     color: green;
+   
     
 }
+
 .editAccount{
     color: rgb(69, 69, 50);
 }
@@ -31,6 +33,7 @@
 }
 .actionholder{
     margin-left:10px;
+   
     
 }
 .actionholder:hover{

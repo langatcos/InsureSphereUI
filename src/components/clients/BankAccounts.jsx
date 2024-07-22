@@ -5,7 +5,7 @@ import './bankaccount.css';
 import React, { useEffect, useState } from 'react';
 import { API_BASE_URL } from '../../configs/Config';
 import { Dialog, DialogActions, DialogContent, DialogTitle, Button, TextField, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
-
+import Tooltip from '@mui/material/Tooltip';
 const BankAccounts = ({ clientId }) => {
     const [accountNumbers, setAccountNumbers] = useState([]);
     const [accountType, setAccountType] = useState("");
@@ -27,6 +27,10 @@ const BankAccounts = ({ clientId }) => {
     const [accountClientId, setAccountClientId] = useState("");
     const [selectedRow, setSelectedRow] = useState(null);
     const [editModalOpen, setEditModalOpen] = useState(false);
+    const [selectedBankToEdit, setSelectedBankToEdit] = useState([])
+    const [clickedBank, setClickedBank] = useState("")
+    const [clickedBranch, setClickedBranch] = useState("")
+    const [ requiredAccountDetails, setRequiredAccountDetails]=useState(false)
 
     useEffect(() => {
         fetch(API_BASE_URL + "/getClientBankaccounts/" + clientId)
@@ -79,12 +83,16 @@ const BankAccounts = ({ clientId }) => {
             .then(response => response.json())
             .then(data => {
                 setBankBranches(data);
-                console.log(data)
+
             })
             .catch(error => {
                 console.error('Error fetching subsidiaries:', error);
             });
     };
+
+
+
+
 
     const handleAddAccountSection = () => {
         setShowAddSection(true);
@@ -93,6 +101,14 @@ const BankAccounts = ({ clientId }) => {
 
     const handleSubmitAccount = (e) => {
         e.preventDefault();
+
+        if (!accountType || !accountName || !accountNo || !selectedBank || !bankBranch) {
+            // Display error message or feedback
+            setRequiredAccountDetails(true)
+            return;
+        }
+
+
         const bankCode = selectedBank;
         const newAccount = { clientId, accountNo, accountName, accountType, bankCode, bankBranch };
         fetch(API_BASE_URL + "/addAccountNumber", {
@@ -108,35 +124,111 @@ const BankAccounts = ({ clientId }) => {
             } else {
                 console.log("Error occurred");
             }
-        }).catch(error => {
+        }).then(() => {
+            fetchClientBankAccounts();
+        }) .catch(error => {
             console.log(error);
         });
     };
 
-    const handleRowClick = (id, accountClientId) => {
+    const handleRowClick = (id, accountClientId, bankCode, branch) => {
         setSelectedRow(id);
         setAccountClientId(accountClientId);
         setAccountId(id);
         setShowEditButton(true);
         setShowDeleteButton(true);
+        setShowAddSection(false)
+        setClickedBank(bankCode)
+        setClickedBranch(branch)
+
+
     };
 
-    const handleEditAccount = (e) => {
+    const handleEditAccount = async (e) => {
         const accountToEdit = clientBankAccounts.find(account => account.id === selectedRow);
+
         if (accountToEdit) {
             setAccountType(accountToEdit.accountType);
             setAccountName(accountToEdit.accountName);
             setAccountNo(accountToEdit.accountNo);
             setSelectedBank(accountToEdit.bankCode);
             setAccountBankBranch(accountToEdit.bankBranch);
+
+            // Fetch bank branches for the selected bank
+            try {
+                const response = await fetch(API_BASE_URL + "/getAllBranchesByBankcode/" + accountToEdit.bankCode);
+                const data = await response.json();
+                setBankBranches(data);
+            } catch (error) {
+                console.error('Error fetching bank branches:', error);
+            }
+
             setEditModalOpen(true);
         }
     };
 
+    useEffect(() => {
+        if (selectedBank) {
+            fetch(API_BASE_URL + "/getAllBranchesByBankcode/" + selectedBank)
+                .then(response => response.json())
+                .then(data => {
+                    setBankBranches(data);
+                    // Ensure the selected branch is valid or reset
+                    if (data.length > 0 && !data.some(branch => branch.branchCode === bankBranch)) {
+                        setAccountBankBranch(''); // or some default valid value
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching bank branches:', error);
+                });
+        }
+    }, [selectedBank]);
+
+    useEffect(() => {
+        if (clientBankAccounts.length > 0) {
+            const accountToEdit = clientBankAccounts.find(account => account.id === selectedRow);
+            if (accountToEdit) {
+                setAccountType(accountToEdit.accountType);
+                setAccountName(accountToEdit.accountName);
+                setAccountNo(accountToEdit.accountNo);
+                setSelectedBank(accountToEdit.bankCode);
+                setAccountBankBranch(accountToEdit.bankBranch);
+                // Fetch branches for selected bank
+                fetch(API_BASE_URL + "/getAllBranchesByBankcode/" + accountToEdit.bankCode)
+                    .then(response => response.json())
+                    .then(data => {
+                        setBankBranches(data);
+                        if (data.length > 0 && !data.some(branch => branch.branchCode === accountToEdit.bankBranch)) {
+                            setAccountBankBranch(''); // or some default valid value
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching bank branches:', error);
+                    });
+            }
+        }
+    }, [clientBankAccounts, selectedRow]);
+    const fetchClientBankAccounts = () => {
+        fetch(API_BASE_URL + "/getClientBankaccounts/" + clientId)
+            .then((response) => response.json())
+            .then(data => {
+                if (Array.isArray(data)) {
+                    setClientBankAccounts(data);
+                    setBankAccountExist(true);
+                }
+            }).catch((error) => {
+                setNoBankAccounts(true);
+            });
+    };
     const handleEditSubmit = (e) => {
         e.preventDefault();
+        if (!accountType || !accountName || !accountNo || !selectedBank || !bankBranch) {
+            // Display error message or feedback
+            setRequiredAccountDetails(true);
+            return;
+        }
         const updatedAccount = { clientId, accountNo, accountName, accountType, bankCode: selectedBank, bankBranch };
-        console.log(JSON.stringify(updatedAccount))
+    
         fetch(API_BASE_URL + "/updateBankAccount/" + clientId + "/" + accountId, {
             method: 'PUT',
             headers: {
@@ -150,6 +242,8 @@ const BankAccounts = ({ clientId }) => {
             } else {
                 console.log("Error occurred");
             }
+        }).then(() => {
+            fetchClientBankAccounts(); // Refetch account details after successful update
         }).catch(error => {
             console.log(error);
         });
@@ -163,10 +257,19 @@ const BankAccounts = ({ clientId }) => {
         <div className='client'>
             <div className='buttoncontainer'>
                 <div className='actionholder'>
-                    <ControlPointOutlinedIcon className='addAccount' onClick={handleAddAccountSection} />
+                    <Tooltip title="Add Account">
+                        <ControlPointOutlinedIcon className='addAccount' onClick={handleAddAccountSection} />
+                    </Tooltip>
                 </div>
-                {showEditButton && <div className='actionholder'><EditOutlinedIcon className='editAccount' onClick={handleEditAccount} /></div>}
-                {showDeleteButton && <div className='actionholder'><RemoveCircleOutlineOutlinedIcon className='deleteAccount' /></div>}
+                {showEditButton && <div className='actionholder'>
+                    <Tooltip title="Edit Account">
+                        <EditOutlinedIcon className='editAccount' onClick={handleEditAccount} />
+                    </Tooltip></div>}
+                {showDeleteButton && <div className='actionholder'>
+                    <Tooltip title="Delete Account">
+                        <RemoveCircleOutlineOutlinedIcon className='deleteAccount' />
+                    </Tooltip>
+                </div>}
             </div>
             <div className='accountDetails'>
                 {noBAnkAccounts && <label className='nobankAccount'>No Bank Account(s) defined for this client</label>}
@@ -187,7 +290,7 @@ const BankAccounts = ({ clientId }) => {
                             {clientBankAccounts.map((accounts) => (
                                 <tr
                                     key={accounts.id}
-                                    onClick={() => handleRowClick(accounts.id, accounts.clientId)}
+                                    onClick={() => handleRowClick(accounts.id, accounts.clientId, accounts.bankCode, accounts.bankBranch)}
                                     className={selectedRow === accounts.id ? 'table-active-custom' : ''}
                                     style={{ cursor: 'pointer' }}
                                 >
@@ -209,9 +312,10 @@ const BankAccounts = ({ clientId }) => {
                     <div className="form-group row">
                         <label className="col-sm-2 col-form-label">Account Type</label>
                         <div className="col-sm-10">
-                            <select
+                            <select 
                                 className="custom-select custom-select-sm"
                                 onChange={e => setAccountType(e.target.value)}
+                                required
                             >
                                 <option value="" selected>---select---</option>
                                 {accountNumbers.map(type => (
@@ -224,18 +328,18 @@ const BankAccounts = ({ clientId }) => {
                     <div className="form-group row">
                         <label className="col-sm-2 col-form-label">Account Name</label>
                         <div className="col-sm-10">
-                            <input
+                            <input 
                                 type="text"
                                 onChange={e => setAccountName(e.target.value)}
                                 className="form-control"
-                            />
+                                required />
                         </div>
                     </div>
                     <br />
                     <div className="form-group row">
                         <label className="col-sm-2 col-form-label">Account No</label>
                         <div className="col-sm-10">
-                            <input
+                            <input required
                                 type="text"
                                 onChange={e => setAccountNo(e.target.value)}
                                 className="form-control"
@@ -246,7 +350,7 @@ const BankAccounts = ({ clientId }) => {
                     <div className="form-group row">
                         <label className="col-sm-2 col-form-label">Bank Name</label>
                         <div className="col-sm-10">
-                            <input
+                            <input 
                                 type="text"
                                 className="form-control mb-2"
                                 placeholder="Search bank"
@@ -256,10 +360,10 @@ const BankAccounts = ({ clientId }) => {
                                     setSearchTerm(e.target.value);
                                 }}
                             />
-                            <select
+                            <select 
                                 className="custom-select custom-select-sm"
                                 onChange={e => handleBankSelection(e.target.value)}
-                                multiple
+                                multiple required
                             >
                                 <option value="" selected>---select---</option>
                                 {filteredBanks.map((banks) => (
@@ -281,10 +385,10 @@ const BankAccounts = ({ clientId }) => {
                                     setSearchBranch(e.target.value);
                                 }}
                             />
-                            <select
+                            <select 
                                 className="custom-select custom-select-sm"
                                 onChange={e => setAccountBankBranch(e.target.value)}
-                                multiple
+                                multiple required
                             >
                                 <option value="" selected>---select---</option>
                                 {filteredBankBranches.map((branch) => (
@@ -295,8 +399,12 @@ const BankAccounts = ({ clientId }) => {
                     </div>
                     <br />
                     <br />
+                    {requiredAccountDetails&&<div className="form-group row">
+                        <label className='nobankAccount'> Capture All Account Details</label>
+                    </div>}
                     <div className="form-group row">
                         <button className="btn btn-primary" onClick={handleSubmitAccount}>Submit</button>
+                        
                     </div>
                     <br />
                 </div>
@@ -336,7 +444,10 @@ const BankAccounts = ({ clientId }) => {
                         <InputLabel>Bank Code</InputLabel>
                         <Select
                             value={selectedBank || ''}
-                            onChange={e => handleBankSelection(e.target.value)}
+                            onChange={e => {
+                                handleBankSelection(e.target.value);
+                                setSelectedBank(e.target.value); // Update selected bank
+                            }}
                         >
                             {savedBanks.length > 0 ? (
                                 savedBanks.map(bank => (
@@ -351,6 +462,7 @@ const BankAccounts = ({ clientId }) => {
                             )}
                         </Select>
                     </FormControl>
+
                     <FormControl fullWidth margin="dense">
                         <InputLabel>Bank Branch</InputLabel>
                         <Select
@@ -370,8 +482,13 @@ const BankAccounts = ({ clientId }) => {
                             )}
                         </Select>
                     </FormControl>
+                    {requiredAccountDetails&&<div className="form-group row">
+                        <label className='nobankAccount'> Capture All Account Details</label>
+                    </div>}
                 </DialogContent>
+                
                 <DialogActions>
+              
                     <Button onClick={() => setEditModalOpen(false)} color="primary">
                         Cancel
                     </Button>
