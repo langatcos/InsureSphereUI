@@ -7,7 +7,7 @@ import { API_BASE_URL } from '../../configs/Config';
 import { Dialog, DialogActions, DialogContent, DialogTitle, Button, TextField, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 import Tooltip from '@mui/material/Tooltip';
 const BankAccounts = ({ clientId }) => {
-    const [accountNumbers, setAccountNumbers] = useState([]);
+    const [accountTypes, setAccountTypes] = useState([]);
     const [accountType, setAccountType] = useState("");
     const [accountName, setAccountName] = useState("");
     const [accountNo, setAccountNo] = useState("");
@@ -30,6 +30,9 @@ const BankAccounts = ({ clientId }) => {
     const [selectedBankToEdit, setSelectedBankToEdit] = useState([])
     const [clickedBank, setClickedBank] = useState("")
     const [clickedBranch, setClickedBranch] = useState("")
+    const [accountIdClicked, setAccountIdClicked] = useState("")
+    const [selectedBranchCode, setSelectedBranchCode]=useState("")
+
     const [ requiredAccountDetails, setRequiredAccountDetails]=useState(false)
 
     useEffect(() => {
@@ -39,6 +42,7 @@ const BankAccounts = ({ clientId }) => {
                 if (Array.isArray(data)) {
                     setClientBankAccounts(data);
                     setBankAccountExist(true);
+                  
                 }
             }).catch((error) => {
                 setNoBankAccounts(true);
@@ -50,7 +54,7 @@ const BankAccounts = ({ clientId }) => {
             .then((response) => response.json())
             .then(data => {
                 if (Array.isArray(data)) {
-                    setAccountNumbers(data);
+                    setAccountTypes(data);
                 }
             }).catch((error) => {
                 console.log(error);
@@ -130,9 +134,10 @@ const BankAccounts = ({ clientId }) => {
             console.log(error);
         });
     };
-
-    const handleRowClick = (id, accountClientId, bankCode, branch) => {
+   
+    const handleRowClick = (id, accountClientId, bankCode, branch, branchCode) => {
         setSelectedRow(id);
+        setAccountIdClicked(id)
         setAccountClientId(accountClientId);
         setAccountId(id);
         setShowEditButton(true);
@@ -140,6 +145,9 @@ const BankAccounts = ({ clientId }) => {
         setShowAddSection(false)
         setClickedBank(bankCode)
         setClickedBranch(branch)
+        setSelectedBranchCode(branchCode)
+       
+
 
 
     };
@@ -152,7 +160,7 @@ const BankAccounts = ({ clientId }) => {
             setAccountName(accountToEdit.accountName);
             setAccountNo(accountToEdit.accountNo);
             setSelectedBank(accountToEdit.bankCode);
-            setAccountBankBranch(accountToEdit.bankBranch);
+            setAccountBankBranch(accountToEdit.branchCode);
 
             // Fetch bank branches for the selected bank
             try {
@@ -253,6 +261,27 @@ const BankAccounts = ({ clientId }) => {
             setAccountBankBranch(clientBankAccounts[0].bankBranch); // Adjust as needed to get the correct bank branch
         }
     }, [clientBankAccounts]);
+    const handleDeleteBankAccount = () =>{
+        if (selectedRow) {
+            fetch(API_BASE_URL + "/deleteBankAccount/" + accountClientId  + "/" + accountIdClicked, {
+                method: 'DELETE'
+            }).then((response) => {
+                if (response.ok) {
+                    console.log("Bank Account deleted successifully");
+                    fetchClientBankAccounts()
+                }
+                else {
+                    console.error("Failed to delete Code");
+                }
+            }).catch((error) => {
+                console.error("Error deleting user:", error);
+            });
+        }
+        else {
+            console.log("No Bank Account Selected for Deletion")
+        } 
+
+    }
     return (
         <div className='client'>
             <div className='buttoncontainer'>
@@ -267,7 +296,7 @@ const BankAccounts = ({ clientId }) => {
                     </Tooltip></div>}
                 {showDeleteButton && <div className='actionholder'>
                     <Tooltip title="Delete Account">
-                        <RemoveCircleOutlineOutlinedIcon className='deleteAccount' />
+                        <RemoveCircleOutlineOutlinedIcon className='deleteAccount' onClick= {handleDeleteBankAccount}/>
                     </Tooltip>
                 </div>}
             </div>
@@ -290,7 +319,7 @@ const BankAccounts = ({ clientId }) => {
                             {clientBankAccounts.map((accounts) => (
                                 <tr
                                     key={accounts.id}
-                                    onClick={() => handleRowClick(accounts.id, accounts.clientId, accounts.bankCode, accounts.bankBranch)}
+                                    onClick={() => handleRowClick(accounts.id, accounts.clientId, accounts.bankCode, accounts.bankBranch, accounts.branchCode)}
                                     className={selectedRow === accounts.id ? 'table-active-custom' : ''}
                                     style={{ cursor: 'pointer' }}
                                 >
@@ -318,7 +347,7 @@ const BankAccounts = ({ clientId }) => {
                                 required
                             >
                                 <option value="" selected>---select---</option>
-                                {accountNumbers.map(type => (
+                                {accountTypes.map(type => (
                                     <option key={type.id} value={type.description}>{type.description}</option>
                                 ))}
                             </select>
@@ -419,7 +448,7 @@ const BankAccounts = ({ clientId }) => {
                             value={accountType}
                             onChange={e => setAccountType(e.target.value)}
                         >
-                            {accountNumbers.map(type => (
+                            {accountTypes.map(type => (
                                 <MenuItem key={type.id} value={type.description}>{type.description}</MenuItem>
                             ))}
                         </Select>
@@ -466,7 +495,7 @@ const BankAccounts = ({ clientId }) => {
                     <FormControl fullWidth margin="dense">
                         <InputLabel>Bank Branch</InputLabel>
                         <Select
-                            value={bankBranch || ''}
+                            value={bankBranch|| ""}
                             onChange={e => setAccountBankBranch(e.target.value)}
                         >
                             {bankBranches.length > 0 ? (
