@@ -70,10 +70,9 @@ const SearchClients = () => {
     const [filter, setFilter] = useState('');
     const [namesSection, setNameSection]=useState(false)
     const [filteredResults, setFilteredResults] = useState([]);
+    const [searchClientName, setSearchedClient] = useState("");
 
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
+
 
     const handleClose = () => {
         setOpen(false);
@@ -110,21 +109,9 @@ const SearchClients = () => {
         setFilter('')
         fetch(API_BASE_URL + "/getclientbySearchvalue/" + searchvalue2)
             .then((response) => response.json())
-            .then(data => {
-                setSearchResult2(data);
-                const clienttype = data[0]?.clientType;
-                
-                if (clienttype === 1) {
-                    setClientResult(true)
-                    setCompanyResult(false)
-
-                } else {
-                    setCompanyResult(true)
-                    setClientResult(false)
-                }
-                //console.log(data)
+            .then(data => {              
+                setSearchResult2(data);                
                 setOpen(true);
-
             }).catch(error => {
                 setNoResults(true);
 
@@ -161,12 +148,13 @@ const SearchClients = () => {
     });*/
 
     const handleSearch2 = (clientId,clientType,title,firstName,surname,companyName) => {
+        handleClose()
         setFilter('')
         setFilteredResults([])
         setSearchResult2("")
         const searchInformation =(clientId,clientType,title,firstName,surname,companyName )
         //console.log("Thi is:" + clientId)
-        setSearchResult(JSON.stringify(searchInformation))
+        //setSearchResult(JSON.stringify(searchInformation))
         
         setSearchValue(clientId)
         //setViewDetailsSection(true);
@@ -178,12 +166,20 @@ const SearchClients = () => {
 
                 const clientid = data[0]?.id;
                 const clienttype = data[0]?.clientType;
+                const title = data[0]?.title;
+                const firstName = data[0]?.firstName;
+                const surname = data[0]?.surname;
+                const companyName = data[0]?.companyName;
+                console.log(firstName)
+                
                 if (clientid) {
-                    handleClose()
+                    
                     setValue('1');
                     setNameSection(true)
+                    setSearchedClient(title+" "+firstName+" "+surname)
 
                     if (clienttype === 1) {
+                        setSearchedClient(companyName)
                         setClientId(clientId)
                         setSearchExist(true);
                         setCompanyExist(false);
@@ -211,9 +207,11 @@ const SearchClients = () => {
                 setCompanyExist(false);
             });
     };
-
+console.log(searchClientName)
     const handleViewDetails = (clientid) => {
         setEditArea(false);
+        setOpen(false);
+        setFilteredResults([])
         fetch(API_BASE_URL + "/getclientroles/" + clientid)
             .then((response) => response.json())
             .then(data => {
@@ -278,6 +276,7 @@ const SearchClients = () => {
     const handleAddRoleButton = () => {
         //console.log("This is a test")
 
+        setOpen(false);
         setAddRoleSection(true)
     };
     const handleRoleInfoFields = (input, clientId, roleId, fieldId, isDate = false) => {
@@ -464,6 +463,8 @@ const SearchClients = () => {
                             setNoResults(false)
                             setNameSection(false)
                             setFilteredResults([])
+                            setClientInfo([]);
+                            setRoleFieldsData([])
 
 
                         }} />
@@ -519,7 +520,7 @@ const SearchClients = () => {
                         </Dialog>
                     </div>
                     {namesSection &&<div>
-                        This is the name
+                        {searchClientName}
                     </div>}
                     {(searchexist || companyexist) && <TabContext value={value}>
                         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
@@ -545,7 +546,7 @@ const SearchClients = () => {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {searchresult.map((item) => (
+                                            {Array.isArray(searchresult) &&searchresult.map((item) => (
                                                 <tr key={item.id}>
                                                     <td>{item.id}</td>
                                                     <td>{item.clientType}</td>

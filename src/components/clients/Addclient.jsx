@@ -401,6 +401,9 @@ const Addclient = () => {
                                         onChange={(date) => setDob(date)}
                                         dateFormat="yyyy-MM-dd"
                                         className="form-control"
+                                        showYearDropdown
+                                        yearDropdownItemNumber={60}
+                                        scrollableYearDropdown
                                         disabled={disabledClient}
                                     />
                                 </div>
