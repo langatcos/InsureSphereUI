@@ -23,6 +23,7 @@ import {
     TableHead,
     TableRow,
     Paper,
+    TextField
 } from '@mui/material'
 import 'react-datepicker/dist/react-datepicker.css';
 import Relationships from './Relationships';
@@ -62,8 +63,12 @@ const SearchClients = () => {
     const [changedCompanyName, setChangedCompanyName] = useState("")
     const [existingClientId, setExistingClientId] = useState("")
     const [open, setOpen] = useState(false);
-    const [companyResult,setCompanyResult]=useState(false)
-    const [clientResult,setClientResult]=useState(false)
+    const [companyResult, setCompanyResult] = useState(false)
+    const [clientResult, setClientResult] = useState(false)
+    const [filter, setFilter] = useState('');
+    const [namesSection, setNameSection]=useState(false)
+    const [filteredResults, setFilteredResults] = useState([]);
+
     const handleClickOpen = () => {
         setOpen(true);
     };
@@ -96,33 +101,70 @@ const SearchClients = () => {
                 console.log(error);
             });
     }, []);
-    const handleSearch =(e)=>{
+    const handleSearch = (e) => {
+        setNameSection(false)
+        
         e.preventDefault()
+        setFilter('')
         fetch(API_BASE_URL + "/getclientbySearchvalue/" + searchvalue)
             .then((response) => response.json())
             .then(data => {
                 setSearchResult2(data);
                 const clienttype = data[0]?.clientType;
+                
                 if (clienttype === 1) {
                     setClientResult(true)
                     setCompanyResult(false)
 
-                }else{
+                } else {
                     setCompanyResult(true)
                     setClientResult(false)
                 }
                 //console.log(data)
                 setOpen(true);
 
-            }).catch(error=>{
+            }).catch(error => {
                 setNoResults(true);
 
             })
     }
+    useEffect(() => {
+        if (filter === '') {
+          setFilteredResults(searchresult2);
+        } else {
+          setFilteredResults(
+            searchresult2.filter((result) => {
+                return (
+                    (result.clientType && typeof result.clientType === 'string' && result.clientType.toLowerCase().includes(filter.toLowerCase())) ||
+                    (result.title && typeof result.title === 'string' && result.title.toLowerCase().includes(filter.toLowerCase())) ||
+                    (result.companyName && typeof result.companyName === 'string' && result.companyName.toLowerCase().includes(filter.toLowerCase())) ||
+        
+                    (result.firstName && typeof result.firstName === 'string' && result.firstName.toLowerCase().includes(filter.toLowerCase())) ||
+                    (result.surname && typeof result.surname === 'string' && result.surname.toLowerCase().includes(filter.toLowerCase())) ||
+                    (result.id && result.id.toString().includes(filter))
+                );
+            })
+          );
+        }
+      }, [filter, searchresult2]);
+      console.log(filteredResults)
+   /* const filteredResults = searchresult2.filter((result) => {
+        return (
+            (result.clientType && typeof result.clientType === 'string' && result.clientType.toLowerCase().includes(filter.toLowerCase())) ||
+            (result.title && typeof result.title === 'string' && result.title.toLowerCase().includes(filter.toLowerCase())) ||
+            (result.companyName && typeof result.companyName === 'string' && result.companyName.toLowerCase().includes(filter.toLowerCase())) ||
+
+            (result.firstName && typeof result.firstName === 'string' && result.firstName.toLowerCase().includes(filter.toLowerCase())) ||
+            (result.surname && typeof result.surname === 'string' && result.surname.toLowerCase().includes(filter.toLowerCase())) ||
+            (result.id && result.id.toString().includes(filter))
+        );
+    });*/
 
     const handleSearch2 = (clientId) => {
-       console.log("Thi is:"+clientId)
-       setSearchValue(clientId)
+        setFilter('')
+        setFilteredResults([])
+        //console.log("Thi is:" + clientId)
+        setSearchValue(clientId)
         //setViewDetailsSection(true);
         setEditArea(false);
         fetch(API_BASE_URL + "/getclientbyid/" + clientId)
@@ -135,6 +177,7 @@ const SearchClients = () => {
                 if (clientid) {
                     handleClose()
                     setValue('1');
+                    setNameSection(true)
 
                     if (clienttype === 1) {
                         setClientId(clientId)
@@ -402,7 +445,7 @@ const SearchClients = () => {
 
     return (
         <div className='searchClients'>
-            Search client by ClientNo
+            Search client (Use any Keywords including:Names or Client id)
             <div className="formcontainer">
                 <form onSubmit={handleSearch}>
                     <div className="search">
@@ -415,36 +458,48 @@ const SearchClients = () => {
                             setAddRole(false)
                             setSearchValue(e.target.value)
                             setNoResults(false)
+                            setNameSection(false)
+                            setFilteredResults([])
+
 
                         }} />
                         <SearchIcon className='icon' onClick={handleSearch} />
                     </div>
 
-                    {clientResult&&<div>
+                    
+                   <div>
                         <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
                             <DialogTitle>Search Results</DialogTitle>
                             <DialogContent>
+                                <TextField
+                                    label="Filter"
+                                    variant="outlined"
+                                    fullWidth
+                                    margin="dense"
+                                    value={filter}
+                                    onChange={(e) => setFilter(e.target.value)}
+                                />
                                 <TableContainer component={Paper}>
                                     <Table>
                                         <TableHead>
                                             <TableRow>
                                                 <TableCell>ID</TableCell>
-                                                <TableCell>ClientType</TableCell>
-                                                <TableCell>Title</TableCell>
-                                                <TableCell>First Name</TableCell>
-                                                <TableCell>Surname</TableCell>
+                                                <TableCell>Client Type</TableCell>
+                                                 <TableCell>Names</TableCell>
+                                               
                                             </TableRow>
                                         </TableHead>
                                         <TableBody>
-                                            {searchresult2.map((result) => (
-                                                <TableRow key={result.id} onClick={(e)=>{handleSearch2(result.id)
-                                                    
-                                                }}className='SearchModal' >
+                                            {Array.isArray(filteredResults) && filteredResults.map((result) => (
+                                                <TableRow
+                                                    key={result.id}
+                                                    onClick={() => handleSearch2(result.id)}
+                                                    className='SearchModal'
+                                                >
                                                     <TableCell>{result.id}</TableCell>
                                                     <TableCell>{result.clientType}</TableCell>
-                                                    <TableCell>{result.title}</TableCell>
-                                                    <TableCell>{result.firstName}</TableCell>
-                                                    <TableCell>{result.surname}</TableCell>
+                                                    <TableCell>{result.title} {result.firstName} {result.surname} {result.companyName}</TableCell>
+                                                   
 
                                                 </TableRow>
                                             ))}
@@ -458,41 +513,9 @@ const SearchClients = () => {
                                 </Button>
                             </DialogActions>
                         </Dialog>
-                    </div>}
-                    {companyResult &&<div>
-                        <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
-                            <DialogTitle>Search Results</DialogTitle>
-                            <DialogContent>
-                                <TableContainer component={Paper}>
-                                    <Table>
-                                        <TableHead>
-                                            <TableRow>
-                                                <TableCell> Client ID</TableCell>
-                                                <TableCell>ClientType</TableCell>
-                                                <TableCell>Company Name</TableCell>
-                                            </TableRow>
-                                        </TableHead>
-                                        <TableBody>
-                                            {searchresult2.map((result) => (
-                                                <TableRow key={result.id} onClick={(e)=>{handleSearch2(result.id)
-                                                    
-                                                }} className='SearchModal' >
-                                                    <TableCell>{result.id}</TableCell>
-                                                    <TableCell>{result.clientType}</TableCell>                                                
-                                                    <TableCell>{result.companyName}</TableCell>
-
-                                                </TableRow>
-                                            ))}
-                                        </TableBody>
-                                    </Table>
-                                </TableContainer>
-                            </DialogContent>
-                            <DialogActions>
-                                <Button onClick={handleClose} color="primary">
-                                    Close
-                                </Button>
-                            </DialogActions>
-                        </Dialog>
+                    </div>
+                    {namesSection &&<div>
+                        This is the name
                     </div>}
                     {(searchexist || companyexist) && <TabContext value={value}>
                         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
