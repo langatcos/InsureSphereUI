@@ -607,7 +607,7 @@ const SearchClients = () => {
                                         <tbody>
 
                                             {searchresult.map(info => (
-                                                <tr>
+                                                <tr key={info.id}>
                                                     <td>{info.id}</td>
                                                     <td>
                                                         <select name="title" className='form-control' value={changedTitle || info.title} onChange={e => setChangedTitle(e.target.value)}>
