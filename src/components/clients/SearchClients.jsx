@@ -31,6 +31,8 @@ import BankAccounts from './BankAccounts';
 
 const SearchClients = () => {
     const [searchvalue, setSearchValue] = useState("");
+    const [searchvalue2, setSearchValue2] = useState("");
+
     const [searchresult, setSearchResult] = useState([]);
     const [searchresult2, setSearchResult2] = useState([]);
     const [noresults, setNoResults] = useState(false);
@@ -106,7 +108,7 @@ const SearchClients = () => {
         
         e.preventDefault()
         setFilter('')
-        fetch(API_BASE_URL + "/getclientbySearchvalue/" + searchvalue)
+        fetch(API_BASE_URL + "/getclientbySearchvalue/" + searchvalue2)
             .then((response) => response.json())
             .then(data => {
                 setSearchResult2(data);
@@ -138,7 +140,6 @@ const SearchClients = () => {
                     (result.clientType && typeof result.clientType === 'string' && result.clientType.toLowerCase().includes(filter.toLowerCase())) ||
                     (result.title && typeof result.title === 'string' && result.title.toLowerCase().includes(filter.toLowerCase())) ||
                     (result.companyName && typeof result.companyName === 'string' && result.companyName.toLowerCase().includes(filter.toLowerCase())) ||
-        
                     (result.firstName && typeof result.firstName === 'string' && result.firstName.toLowerCase().includes(filter.toLowerCase())) ||
                     (result.surname && typeof result.surname === 'string' && result.surname.toLowerCase().includes(filter.toLowerCase())) ||
                     (result.id && result.id.toString().includes(filter))
@@ -147,7 +148,6 @@ const SearchClients = () => {
           );
         }
       }, [filter, searchresult2]);
-      console.log(filteredResults)
    /* const filteredResults = searchresult2.filter((result) => {
         return (
             (result.clientType && typeof result.clientType === 'string' && result.clientType.toLowerCase().includes(filter.toLowerCase())) ||
@@ -163,6 +163,7 @@ const SearchClients = () => {
     const handleSearch2 = (clientId) => {
         setFilter('')
         setFilteredResults([])
+        setSearchResult2("")
         //console.log("Thi is:" + clientId)
         setSearchValue(clientId)
         //setViewDetailsSection(true);
@@ -456,7 +457,7 @@ const SearchClients = () => {
                             setEditArea(false)
                             setAddRoleSection(false)
                             setAddRole(false)
-                            setSearchValue(e.target.value)
+                            setSearchValue2(e.target.value)
                             setNoResults(false)
                             setNameSection(false)
                             setFilteredResults([])
