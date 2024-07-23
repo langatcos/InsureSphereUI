@@ -10,13 +10,28 @@ import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import Tab from '@mui/material/Tab';
 import { TabContext } from '@mui/lab'
-import { Box } from '@mui/material'
+import {
+    Box, Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    Button,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Paper,
+} from '@mui/material'
 import 'react-datepicker/dist/react-datepicker.css';
 import Relationships from './Relationships';
 import BankAccounts from './BankAccounts';
+
 const SearchClients = () => {
     const [searchvalue, setSearchValue] = useState("");
     const [searchresult, setSearchResult] = useState([]);
+    const [searchresult2, setSearchResult2] = useState([]);
     const [noresults, setNoResults] = useState(false);
     const [searchexist, setSearchExist] = useState(false);
     const [companyexist, setCompanyExist] = useState(false);
@@ -45,10 +60,18 @@ const SearchClients = () => {
     const [changedTitle, setChangedTitle] = useState("");
     const [changedSurname, setChangedSurname] = useState("");
     const [changedCompanyName, setChangedCompanyName] = useState("")
-    const [existingClientId, setExistingClientId]=useState("")
+    const [existingClientId, setExistingClientId] = useState("")
+    const [open, setOpen] = useState(false);
+    const [companyResult,setCompanyResult]=useState(false)
+    const [clientResult,setClientResult]=useState(false)
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
 
+    const handleClose = () => {
+        setOpen(false);
+    };
 
-    
     useEffect(() => {
         fetch(API_BASE_URL + "/getAllCodes")
             .then((response) => response.json())
@@ -73,12 +96,36 @@ const SearchClients = () => {
                 console.log(error);
             });
     }, []);
+    const handleSearch =(e)=>{
+        e.preventDefault()
+        fetch(API_BASE_URL + "/getclientbySearchvalue/" + searchvalue)
+            .then((response) => response.json())
+            .then(data => {
+                setSearchResult2(data);
+                const clienttype = data[0]?.clientType;
+                if (clienttype === 1) {
+                    setClientResult(true)
+                    setCompanyResult(false)
 
-    const handleSearch = (e) => {
-        e.preventDefault();
+                }else{
+                    setCompanyResult(true)
+                    setClientResult(false)
+                }
+                //console.log(data)
+                setOpen(true);
+
+            }).catch(error=>{
+                setNoResults(true);
+
+            })
+    }
+
+    const handleSearch2 = (clientId) => {
+       console.log("Thi is:"+clientId)
+       setSearchValue(clientId)
         //setViewDetailsSection(true);
         setEditArea(false);
-        fetch(API_BASE_URL + "/getclientbyid/" + searchvalue)
+        fetch(API_BASE_URL + "/getclientbyid/" + clientId)
             .then((response) => response.json())
             .then(data => {
                 setSearchResult(data);
@@ -86,6 +133,7 @@ const SearchClients = () => {
                 const clientid = data[0]?.id;
                 const clienttype = data[0]?.clientType;
                 if (clientid) {
+                    handleClose()
                     setValue('1');
 
                     if (clienttype === 1) {
@@ -366,330 +414,406 @@ const SearchClients = () => {
                             setAddRoleSection(false)
                             setAddRole(false)
                             setSearchValue(e.target.value)
+                            setNoResults(false)
 
                         }} />
                         <SearchIcon className='icon' onClick={handleSearch} />
                     </div>
-                    {(searchexist || companyexist) &&<TabContext value={value}>
+
+                    {clientResult&&<div>
+                        <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
+                            <DialogTitle>Search Results</DialogTitle>
+                            <DialogContent>
+                                <TableContainer component={Paper}>
+                                    <Table>
+                                        <TableHead>
+                                            <TableRow>
+                                                <TableCell>ID</TableCell>
+                                                <TableCell>ClientType</TableCell>
+                                                <TableCell>Title</TableCell>
+                                                <TableCell>First Name</TableCell>
+                                                <TableCell>Surname</TableCell>
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                            {searchresult2.map((result) => (
+                                                <TableRow key={result.id} onClick={(e)=>{handleSearch2(result.id)
+                                                    
+                                                }}className='SearchModal' >
+                                                    <TableCell>{result.id}</TableCell>
+                                                    <TableCell>{result.clientType}</TableCell>
+                                                    <TableCell>{result.title}</TableCell>
+                                                    <TableCell>{result.firstName}</TableCell>
+                                                    <TableCell>{result.surname}</TableCell>
+
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
+                            </DialogContent>
+                            <DialogActions>
+                                <Button onClick={handleClose} color="primary">
+                                    Close
+                                </Button>
+                            </DialogActions>
+                        </Dialog>
+                    </div>}
+                    {companyResult &&<div>
+                        <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
+                            <DialogTitle>Search Results</DialogTitle>
+                            <DialogContent>
+                                <TableContainer component={Paper}>
+                                    <Table>
+                                        <TableHead>
+                                            <TableRow>
+                                                <TableCell> Client ID</TableCell>
+                                                <TableCell>ClientType</TableCell>
+                                                <TableCell>Company Name</TableCell>
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                            {searchresult2.map((result) => (
+                                                <TableRow key={result.id} onClick={(e)=>{handleSearch2(result.id)
+                                                    
+                                                }} className='SearchModal' >
+                                                    <TableCell>{result.id}</TableCell>
+                                                    <TableCell>{result.clientType}</TableCell>                                                
+                                                    <TableCell>{result.companyName}</TableCell>
+
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
+                            </DialogContent>
+                            <DialogActions>
+                                <Button onClick={handleClose} color="primary">
+                                    Close
+                                </Button>
+                            </DialogActions>
+                        </Dialog>
+                    </div>}
+                    {(searchexist || companyexist) && <TabContext value={value}>
                         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                             <TabList onChange={handleTabChange} aria-label="lab API tabs example">
                                 <Tab label="Basic Info" value="1" />
-                                {searchexist &&<Tab label="Relationships" value="2" />}
+                                {searchexist && <Tab label="Relationships" value="2" />}
                                 <Tab label="Addresses" value="3" />
                                 <Tab label="Bank Accounts" value="4" />
                             </TabList>
                         </Box>
                         <TabPanel value="1">
-                        <div className="searchresults">
-                        {searchexist && (
-                            <table className='table table-hover table-sm table-striped'>
-                                <thead>
-                                    <tr>
-                                        <th>Client ID</th>
-                                        <th>ClientType</th>
-                                        <th>Title</th>
-                                        <th>First Name</th>
-                                        <th>Surname</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {searchresult.map((item) => (
-                                        <tr key={item.id}>
-                                            <td>{item.id}</td>
-                                            <td>{item.clientType}</td>
-                                            <td>{item.title}</td>
-                                            <td>{item.firstName}</td>
-                                            <td>{item.surname}</td>
-                                            <td>
-                                                {viewDetails && <button onClick={(e) => handleViewDetails(item.id)}>View Details</button>}
-                                                {addRole && <button onClick={() => handleAddRoleButton()}>Add Role</button>}
+                            <div className="searchresults">
+                                {searchexist && (
+                                    <table className='table table-hover table-sm table-striped'>
+                                        <thead>
+                                            <tr>
+                                                <th>Client ID</th>
+                                                <th>ClientType</th>
+                                                <th>Title</th>
+                                                <th>First Name</th>
+                                                <th>Surname</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {searchresult.map((item) => (
+                                                <tr key={item.id}>
+                                                    <td>{item.id}</td>
+                                                    <td>{item.clientType}</td>
+                                                    <td>{item.title}</td>
+                                                    <td>{item.firstName}</td>
+                                                    <td>{item.surname}</td>
+                                                    <td>
+                                                        {viewDetails && <button onClick={(e) => handleViewDetails(item.id)}>View Details</button>}
+                                                        {addRole && <button onClick={() => handleAddRoleButton()}>Add Role</button>}
 
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        )}
-                        {companyexist && (
-                            <table className='table table-hover table-sm table-striped'>
-                                <thead>
-                                    <tr>
-                                        <th>Client ID</th>
-                                        <th>Client Type</th>
-                                        <th>Company Name</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {searchresult.map((item) => (
-                                        <tr key={item.id}>
-                                            <td>{item.id}</td>
-                                            <td>{item.clientType}</td>
-                                            <td>{item.companyName}</td>
-                                            <td>
-                                                {viewDetails && <button onClick={(e) => handleViewDetails(item.id)}>View Details</button>}
-                                                {addRole && <button onClick={(e) => handleAddRoleButton()}>Add Role</button>}
-
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        )}
-                    </div>
-                    <div className='results'>
-
-                {editarea && <div> Basic Info
-                    {searchexist && <table className='table table-hover table-sm table-striped'>
-                        <thead>
-                            <tr>
-                                <th>ClientId</th>
-                                <th>Title</th>
-                                <th>FirstName</th>
-                                <th>Surname</th>
-
-
-                            </tr>
-
-                        </thead>
-                        <tbody>
-
-                            {searchresult.map(info => (
-                                <tr>
-                                    <td>{info.id}</td>
-                                    <td>
-                                        <select name="title" className='form-control' value={changedTitle || info.title} onChange={e => setChangedTitle(e.target.value)}>
-                                            <option value=" ">---select---</option>
-
-                                            {codes.filter(code => code.codesetLinked === 5).map(code => (
-                                                <option key={code.description} value={code.description}>
-                                                    {code.description}
-                                                </option>
-                                            ))}
-                                        </select>
-
-
-                                    </td>
-                                    <td>
-                                        <input type='text' className='form-control' value={info.firstName} name='firstName' required onChange={e => setChangedFirstName(e.target.value)} />
-
-                                    </td>
-                                    <td>
-                                        <input type='text' className='form-control' value={info.surname} name='firstName' required onChange={e => setChangedSurname(e.target.value)} />
-                                    </td>
-
-                                </tr>
-                            ))}
-
-                        </tbody>
-                    </table>}
-                    {companyexist && <table className='table table-hover table-sm table-striped'>
-                        <thead>
-                            <tr>
-                                <th>ClientId</th>
-
-                                <th>Company Name</th>
-
-                            </tr>
-
-                        </thead>
-                        <tbody>
-
-                            {searchresult.map(info => (
-                                <tr>
-                                    <td>{info.id}</td>
-                                    <td>
-                                        <input type='text' className='form-control'
-                                            value={changedCompanyName || info.companyName} name='companyName' required
-                                            onChange={e => handleRoleInfoFields(e, info.clientId, null, 'companyName')} />
-
-
-                                    </td>
-
-                                </tr>
-                            ))}
-
-                        </tbody>
-                    </table>}
-                </div>}
-                {viewdetailssection && (
-                    <div>
-                        <table className='table table-hover table-sm table-striped'>
-                            <thead>
-                                <tr>
-                                    <th>Role</th>
-                                    <th>InfoId</th>
-                                    <th>Info Description</th>
-                                    <th>Value</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {clientInfo.map((info) => (
-                                    <tr key={info.infoId}>
-                                        <td>{info.roleName}</td>
-                                        <td>{info.infoId}</td>
-                                        <td>{info.infoDescription}</td>
-                                        <td>{info.value}</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                        <button className='btn btn-primary' onClick={handleEdit}>Edit</button>
-                    </div>
-                )
-
-                }
-
-
-                {editarea && (
-                    <div className='editarea'>
-                        <table className='table table-sm'>
-                            <thead>
-                                <tr>
-                                    <th className='text-start'>Info Description</th>
-                                    <th className='text-start'>Value</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {clientRole.map(role => (
-                                    <React.Fragment key={role.codeId}>
-                                        {roleFields.filter(field => field.roleId === role.roleId).map(field => {
-                                            // Find the matching value from clientInfo
-                                            const clientInfoItem = clientInfo.find(info => info.infoid === field.fieldId && info.clientId === role.clientId);
-                                            const fieldValue = roleFieldsData[field.roleId]?.[field.fieldId] || clientInfoItem?.value || '';
-
-                                            return (
-                                                <tr key={field.fieldId}>
-                                                    <td className='text-start'>
-                                                        <label htmlFor={field.fieldId}>{field.infoDescription}: </label>
-                                                    </td>
-                                                    <td className='text-start'>
-                                                        {field.inputControl === 'text' && (
-                                                            <input
-                                                                type='text'
-                                                                className='form-control'
-                                                                name={field.fieldId}
-                                                                required={field.required}
-                                                                onChange={e => handleRoleInfoFields(e, role.clientId, field.roleId)}
-                                                                value={fieldValue}
-                                                            />
-                                                        )}
-                                                        {field.inputControl === 'select' && (
-                                                            <select
-                                                                className='form-control form-control-sm'
-                                                                name={field.fieldId}
-                                                                onChange={e => handleRoleInfoFields(e, role.clientId, field.roleId)}
-                                                                value={fieldValue}
-                                                            >
-                                                                <option value=" ">---select---</option>
-                                                                {codes.filter(code => code.codesetLinked === field.codesetLinked).map(code => (
-                                                                    <option key={code.description} value={code.description}>
-                                                                        {code.description}
-                                                                    </option>
-                                                                ))}
-                                                            </select>
-                                                        )}
-                                                        {field.inputControl === 'checkbox' && (
-                                                            <input
-                                                                type='checkbox'
-                                                                className='form-check-input'
-                                                                name={field.fieldId}
-                                                                onChange={e => handleRoleInfoFields(e, role.clientId, field.roleId)}
-                                                                checked={fieldValue === "true"}
-                                                            />
-                                                        )}
-                                                        {field.inputControl === 'radio' && (
-                                                            <input
-                                                                type='radio'
-                                                                className='form-check-input'
-                                                                name={field.fieldId}
-                                                                onChange={e => handleRoleInfoFields(e, role.clientId, field.roleId)}
-                                                            />
-                                                        )}
-                                                        {field.inputControl === 'textarea' && (
-                                                            <textarea
-                                                                className="form-control large-textarea"
-                                                                placeholder="Enter your text here..."
-                                                                name={field.fieldId}
-                                                                onChange={e => handleRoleInfoFields(e, role.clientId, field.roleId)}
-                                                                value={fieldValue}
-                                                            />
-                                                        )}
-                                                        {field.inputControl === 'DatePicker' && (
-                                                            <DatePicker
-                                                                name={field.fieldId}
-                                                                onChange={(date) => handleRoleInfoFields({ target: { name: field.fieldId, value: date } }, role.clientId, field.roleId)}
-                                                                dateFormat="yyyy-MM-dd"
-                                                                className="form-control"
-                                                                selected={fieldValue ? new Date(fieldValue) : null}
-                                                                showYearDropdown
-                                                                yearDropdownItemNumber={60}
-                                                                scrollableYearDropdown
-                                                            />
-                                                        )}
                                                     </td>
                                                 </tr>
-                                            );
-                                        })}
-                                    </React.Fragment>
-                                ))}
-                            </tbody>
-                        </table>
-                        {notEdited && <div className='text-danger'>You have not edited any Field Information - the Form will exit</div>}
-                        <button className='btn btn-primary' onClick={handleUpdate}>Update</button>
-                    </div>
-                )}
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                )}
+                                {companyexist && (
+                                    <table className='table table-hover table-sm table-striped'>
+                                        <thead>
+                                            <tr>
+                                                <th>Client ID</th>
+                                                <th>Client Type</th>
+                                                <th>Company Name</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {searchresult.map((item) => (
+                                                <tr key={item.id}>
+                                                    <td>{item.id}</td>
+                                                    <td>{item.clientType}</td>
+                                                    <td>{item.companyName}</td>
+                                                    <td>
+                                                        {viewDetails && <button onClick={(e) => handleViewDetails(item.id)}>View Details</button>}
+                                                        {addRole && <button onClick={(e) => handleAddRoleButton()}>Add Role</button>}
+
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                )}
+                            </div>
+                            <div className='results'>
+
+                                {editarea && <div> Basic Info
+                                    {searchexist && <table className='table table-hover table-sm table-striped'>
+                                        <thead>
+                                            <tr>
+                                                <th>ClientId</th>
+                                                <th>Title</th>
+                                                <th>FirstName</th>
+                                                <th>Surname</th>
+
+
+                                            </tr>
+
+                                        </thead>
+                                        <tbody>
+
+                                            {searchresult.map(info => (
+                                                <tr>
+                                                    <td>{info.id}</td>
+                                                    <td>
+                                                        <select name="title" className='form-control' value={changedTitle || info.title} onChange={e => setChangedTitle(e.target.value)}>
+                                                            <option value=" ">---select---</option>
+
+                                                            {codes.filter(code => code.codesetLinked === 5).map(code => (
+                                                                <option key={code.description} value={code.description}>
+                                                                    {code.description}
+                                                                </option>
+                                                            ))}
+                                                        </select>
+
+
+                                                    </td>
+                                                    <td>
+                                                        <input type='text' className='form-control' value={info.firstName} name='firstName' required onChange={e => setChangedFirstName(e.target.value)} />
+
+                                                    </td>
+                                                    <td>
+                                                        <input type='text' className='form-control' value={info.surname} name='firstName' required onChange={e => setChangedSurname(e.target.value)} />
+                                                    </td>
+
+                                                </tr>
+                                            ))}
+
+                                        </tbody>
+                                    </table>}
+                                    {companyexist && <table className='table table-hover table-sm table-striped'>
+                                        <thead>
+                                            <tr>
+                                                <th>ClientId</th>
+
+                                                <th>Company Name</th>
+
+                                            </tr>
+
+                                        </thead>
+                                        <tbody>
+
+                                            {searchresult.map(info => (
+                                                <tr>
+                                                    <td>{info.id}</td>
+                                                    <td>
+                                                        <input type='text' className='form-control'
+                                                            value={changedCompanyName || info.companyName} name='companyName' required
+                                                            onChange={e => handleRoleInfoFields(e, info.clientId, null, 'companyName')} />
+
+
+                                                    </td>
+
+                                                </tr>
+                                            ))}
+
+                                        </tbody>
+                                    </table>}
+                                </div>}
+                                {viewdetailssection && (
+                                    <div>
+                                        <table className='table table-hover table-sm table-striped'>
+                                            <thead>
+                                                <tr>
+                                                    <th>Role</th>
+                                                    <th>InfoId</th>
+                                                    <th>Info Description</th>
+                                                    <th>Value</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {clientInfo.map((info) => (
+                                                    <tr key={info.infoId}>
+                                                        <td>{info.roleName}</td>
+                                                        <td>{info.infoId}</td>
+                                                        <td>{info.infoDescription}</td>
+                                                        <td>{info.value}</td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                        <button className='btn btn-primary' onClick={handleEdit}>Edit</button>
+                                    </div>
+                                )
+
+                                }
+
+
+                                {editarea && (
+                                    <div className='editarea'>
+                                        <table className='table table-sm'>
+                                            <thead>
+                                                <tr>
+                                                    <th className='text-start'>Info Description</th>
+                                                    <th className='text-start'>Value</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {clientRole.map(role => (
+                                                    <React.Fragment key={role.codeId}>
+                                                        {roleFields.filter(field => field.roleId === role.roleId).map(field => {
+                                                            // Find the matching value from clientInfo
+                                                            const clientInfoItem = clientInfo.find(info => info.infoid === field.fieldId && info.clientId === role.clientId);
+                                                            const fieldValue = roleFieldsData[field.roleId]?.[field.fieldId] || clientInfoItem?.value || '';
+
+                                                            return (
+                                                                <tr key={field.fieldId}>
+                                                                    <td className='text-start'>
+                                                                        <label htmlFor={field.fieldId}>{field.infoDescription}: </label>
+                                                                    </td>
+                                                                    <td className='text-start'>
+                                                                        {field.inputControl === 'text' && (
+                                                                            <input
+                                                                                type='text'
+                                                                                className='form-control'
+                                                                                name={field.fieldId}
+                                                                                required={field.required}
+                                                                                onChange={e => handleRoleInfoFields(e, role.clientId, field.roleId)}
+                                                                                value={fieldValue}
+                                                                            />
+                                                                        )}
+                                                                        {field.inputControl === 'select' && (
+                                                                            <select
+                                                                                className='form-control form-control-sm'
+                                                                                name={field.fieldId}
+                                                                                onChange={e => handleRoleInfoFields(e, role.clientId, field.roleId)}
+                                                                                value={fieldValue}
+                                                                            >
+                                                                                <option value=" ">---select---</option>
+                                                                                {codes.filter(code => code.codesetLinked === field.codesetLinked).map(code => (
+                                                                                    <option key={code.description} value={code.description}>
+                                                                                        {code.description}
+                                                                                    </option>
+                                                                                ))}
+                                                                            </select>
+                                                                        )}
+                                                                        {field.inputControl === 'checkbox' && (
+                                                                            <input
+                                                                                type='checkbox'
+                                                                                className='form-check-input'
+                                                                                name={field.fieldId}
+                                                                                onChange={e => handleRoleInfoFields(e, role.clientId, field.roleId)}
+                                                                                checked={fieldValue === "true"}
+                                                                            />
+                                                                        )}
+                                                                        {field.inputControl === 'radio' && (
+                                                                            <input
+                                                                                type='radio'
+                                                                                className='form-check-input'
+                                                                                name={field.fieldId}
+                                                                                onChange={e => handleRoleInfoFields(e, role.clientId, field.roleId)}
+                                                                            />
+                                                                        )}
+                                                                        {field.inputControl === 'textarea' && (
+                                                                            <textarea
+                                                                                className="form-control large-textarea"
+                                                                                placeholder="Enter your text here..."
+                                                                                name={field.fieldId}
+                                                                                onChange={e => handleRoleInfoFields(e, role.clientId, field.roleId)}
+                                                                                value={fieldValue}
+                                                                            />
+                                                                        )}
+                                                                        {field.inputControl === 'DatePicker' && (
+                                                                            <DatePicker
+                                                                                name={field.fieldId}
+                                                                                onChange={(date) => handleRoleInfoFields({ target: { name: field.fieldId, value: date } }, role.clientId, field.roleId)}
+                                                                                dateFormat="yyyy-MM-dd"
+                                                                                className="form-control"
+                                                                                selected={fieldValue ? new Date(fieldValue) : null}
+                                                                                showYearDropdown
+                                                                                yearDropdownItemNumber={60}
+                                                                                scrollableYearDropdown
+                                                                            />
+                                                                        )}
+                                                                    </td>
+                                                                </tr>
+                                                            );
+                                                        })}
+                                                    </React.Fragment>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                        {notEdited && <div className='text-danger'>You have not edited any Field Information - the Form will exit</div>}
+                                        <button className='btn btn-primary' onClick={handleUpdate}>Update</button>
+                                    </div>
+                                )}
 
 
 
-                {addRoleSection && <div>
-                    <div className="selections">
-                        <div className="selectbox">
-                            <label>Available Roles</label>
-                            <select multiple={true} value={[]} onChange={handleSelect}>
-                                {availableRoles.map((role) => (
-                                    <option key={role.codeId} value={role.description}>
-                                        {role.description}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                        <div className="icons">
-                        </div>
-                        <div className="selectedbox">
-                            <label>Selected Options</label>
-                            <select multiple={true} value={[]} onChange={handleDeselect}>
-                                {selectedRoles.map((role) => (
-                                    <option key={role.codeId} value={role.codeId}>
-                                        {role.description}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
+                                {addRoleSection && <div>
+                                    <div className="selections">
+                                        <div className="selectbox">
+                                            <label>Available Roles</label>
+                                            <select multiple={true} value={[]} onChange={handleSelect}>
+                                                {availableRoles.map((role) => (
+                                                    <option key={role.codeId} value={role.description}>
+                                                        {role.description}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                        <div className="icons">
+                                        </div>
+                                        <div className="selectedbox">
+                                            <label>Selected Options</label>
+                                            <select multiple={true} value={[]} onChange={handleDeselect}>
+                                                {selectedRoles.map((role) => (
+                                                    <option key={role.codeId} value={role.codeId}>
+                                                        {role.description}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
 
-                    </div>
-                    <div>
-                        <button type='Submit' onClick={handleAddClientRole}>Submit</button>
-                    </div>
+                                    </div>
+                                    <div>
+                                        <button type='Submit' onClick={handleAddClientRole}>Submit</button>
+                                    </div>
 
-                </div>}
+                                </div>}
 
 
-            </div>
+                            </div>
                         </TabPanel>
-                        <TabPanel value="2"><Relationships  clientId={searchvalue}/></TabPanel>
+                        <TabPanel value="2"><Relationships clientId={searchvalue} /></TabPanel>
                         <TabPanel value="3"> Test </TabPanel>
-                        <TabPanel value="4"><BankAccounts clientId={searchvalue}/></TabPanel>
+                        <TabPanel value="4"><BankAccounts clientId={searchvalue} /></TabPanel>
                     </TabContext>}
 
 
-                    
+
                     {noresults && <div className="noresults">No Results found for value entered</div>}
                     {error && <div className="error">Error Occurred, Contact your system administrator</div>}
                 </form>
             </div>
-            
+
 
 
 

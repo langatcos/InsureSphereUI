@@ -28,3 +28,7 @@ width: 90%;
     width: 40%;
     
   }
+  .SearchModal:hover{
+    background-color: rgb(114, 130, 114);
+    cursor: pointer;
+  }

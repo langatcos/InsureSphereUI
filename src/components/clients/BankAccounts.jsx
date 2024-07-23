@@ -31,9 +31,9 @@ const BankAccounts = ({ clientId }) => {
     const [clickedBank, setClickedBank] = useState("")
     const [clickedBranch, setClickedBranch] = useState("")
     const [accountIdClicked, setAccountIdClicked] = useState("")
-    const [selectedBranchCode, setSelectedBranchCode]=useState("")
+    const [selectedBranchCode, setSelectedBranchCode] = useState("")
 
-    const [ requiredAccountDetails, setRequiredAccountDetails]=useState(false)
+    const [requiredAccountDetails, setRequiredAccountDetails] = useState(false)
 
     useEffect(() => {
         fetch(API_BASE_URL + "/getClientBankaccounts/" + clientId)
@@ -42,7 +42,7 @@ const BankAccounts = ({ clientId }) => {
                 if (Array.isArray(data)) {
                     setClientBankAccounts(data);
                     setBankAccountExist(true);
-                  
+
                 }
             }).catch((error) => {
                 setNoBankAccounts(true);
@@ -101,6 +101,8 @@ const BankAccounts = ({ clientId }) => {
     const handleAddAccountSection = () => {
         setShowAddSection(true);
         setNoBankAccounts(false);
+        setBankBranches([])
+        setRequiredAccountDetails(false)
     };
 
     const handleSubmitAccount = (e) => {
@@ -130,11 +132,11 @@ const BankAccounts = ({ clientId }) => {
             }
         }).then(() => {
             fetchClientBankAccounts();
-        }) .catch(error => {
+        }).catch(error => {
             console.log(error);
         });
     };
-   
+
     const handleRowClick = (id, accountClientId, bankCode, branch, branchCode) => {
         setSelectedRow(id);
         setAccountIdClicked(id)
@@ -146,7 +148,7 @@ const BankAccounts = ({ clientId }) => {
         setClickedBank(bankCode)
         setClickedBranch(branch)
         setSelectedBranchCode(branchCode)
-       
+
 
 
 
@@ -236,7 +238,7 @@ const BankAccounts = ({ clientId }) => {
             return;
         }
         const updatedAccount = { clientId, accountNo, accountName, accountType, bankCode: selectedBank, bankBranch };
-    
+
         fetch(API_BASE_URL + "/updateBankAccount/" + clientId + "/" + accountId, {
             method: 'PUT',
             headers: {
@@ -247,6 +249,7 @@ const BankAccounts = ({ clientId }) => {
             if (response.ok) {
                 setEditModalOpen(false);
                 return response.json();
+                setRequiredAccountDetails(false)
             } else {
                 console.log("Error occurred");
             }
@@ -261,9 +264,9 @@ const BankAccounts = ({ clientId }) => {
             setAccountBankBranch(clientBankAccounts[0].bankBranch); // Adjust as needed to get the correct bank branch
         }
     }, [clientBankAccounts]);
-    const handleDeleteBankAccount = () =>{
+    const handleDeleteBankAccount = () => {
         if (selectedRow) {
-            fetch(API_BASE_URL + "/deleteBankAccount/" + accountClientId  + "/" + accountIdClicked, {
+            fetch(API_BASE_URL + "/deleteBankAccount/" + accountClientId + "/" + accountIdClicked, {
                 method: 'DELETE'
             }).then((response) => {
                 if (response.ok) {
@@ -279,7 +282,7 @@ const BankAccounts = ({ clientId }) => {
         }
         else {
             console.log("No Bank Account Selected for Deletion")
-        } 
+        }
 
     }
     return (
@@ -296,7 +299,7 @@ const BankAccounts = ({ clientId }) => {
                     </Tooltip></div>}
                 {showDeleteButton && <div className='actionholder'>
                     <Tooltip title="Delete Account">
-                        <RemoveCircleOutlineOutlinedIcon className='deleteAccount' onClick= {handleDeleteBankAccount}/>
+                        <RemoveCircleOutlineOutlinedIcon className='deleteAccount' onClick={handleDeleteBankAccount} />
                     </Tooltip>
                 </div>}
             </div>
@@ -341,7 +344,7 @@ const BankAccounts = ({ clientId }) => {
                     <div className="form-group row">
                         <label className="col-sm-2 col-form-label">Account Type</label>
                         <div className="col-sm-10">
-                            <select 
+                            <select
                                 className="custom-select custom-select-sm"
                                 onChange={e => setAccountType(e.target.value)}
                                 required
@@ -357,7 +360,7 @@ const BankAccounts = ({ clientId }) => {
                     <div className="form-group row">
                         <label className="col-sm-2 col-form-label">Account Name</label>
                         <div className="col-sm-10">
-                            <input 
+                            <input
                                 type="text"
                                 onChange={e => setAccountName(e.target.value)}
                                 className="form-control"
@@ -379,7 +382,7 @@ const BankAccounts = ({ clientId }) => {
                     <div className="form-group row">
                         <label className="col-sm-2 col-form-label">Bank Name</label>
                         <div className="col-sm-10">
-                            <input 
+                            <input
                                 type="text"
                                 className="form-control mb-2"
                                 placeholder="Search bank"
@@ -389,7 +392,7 @@ const BankAccounts = ({ clientId }) => {
                                     setSearchTerm(e.target.value);
                                 }}
                             />
-                            <select 
+                            <select
                                 className="custom-select custom-select-sm"
                                 onChange={e => handleBankSelection(e.target.value)}
                                 multiple required
@@ -414,7 +417,7 @@ const BankAccounts = ({ clientId }) => {
                                     setSearchBranch(e.target.value);
                                 }}
                             />
-                            <select 
+                            <select
                                 className="custom-select custom-select-sm"
                                 onChange={e => setAccountBankBranch(e.target.value)}
                                 multiple required
@@ -428,12 +431,12 @@ const BankAccounts = ({ clientId }) => {
                     </div>
                     <br />
                     <br />
-                    {requiredAccountDetails&&<div className="form-group row">
+                    {requiredAccountDetails && <div className="form-group row">
                         <label className='nobankAccount'> Capture All Account Details</label>
                     </div>}
                     <div className="form-group row">
                         <button className="btn btn-primary" onClick={handleSubmitAccount}>Submit</button>
-                        
+
                     </div>
                     <br />
                 </div>
@@ -453,22 +456,25 @@ const BankAccounts = ({ clientId }) => {
                             ))}
                         </Select>
                     </FormControl>
-                    <TextField
-                        margin="dense"
-                        label="Account Name"
-                        type="text"
-                        fullWidth
-                        value={accountName}
-                        onChange={e => setAccountName(e.target.value)}
-                    />
-                    <TextField
-                        margin="dense"
-                        label="Account Number"
-                        type="text"
-                        fullWidth
-                        value={accountNo}
-                        onChange={e => setAccountNo(e.target.value)}
-                    />
+
+                    <FormControl fullWidth margin="dense">
+                        <TextField
+                            label="Account Name"
+                            type="text"
+                            value={accountName}
+                            onChange={e => setAccountName(e.target.value)}
+                        />
+                    </FormControl>
+
+                    <FormControl fullWidth margin="dense">
+                        <TextField
+                            label="Account Number"
+                            type="text"
+                            value={accountNo}
+                            onChange={e => setAccountNo(e.target.value)}
+                        />
+                    </FormControl>
+
                     <FormControl fullWidth margin="dense">
                         <InputLabel>Bank Code</InputLabel>
                         <Select
@@ -495,7 +501,7 @@ const BankAccounts = ({ clientId }) => {
                     <FormControl fullWidth margin="dense">
                         <InputLabel>Bank Branch</InputLabel>
                         <Select
-                            value={bankBranch|| ""}
+                            value={bankBranch || ''}
                             onChange={e => setAccountBankBranch(e.target.value)}
                         >
                             {bankBranches.length > 0 ? (
@@ -511,13 +517,14 @@ const BankAccounts = ({ clientId }) => {
                             )}
                         </Select>
                     </FormControl>
-                    {requiredAccountDetails&&<div className="form-group row">
+
+                    {requiredAccountDetails && <div className="form-group row">
                         <label className='nobankAccount'> Capture All Account Details</label>
                     </div>}
                 </DialogContent>
-                
+
                 <DialogActions>
-              
+
                     <Button onClick={() => setEditModalOpen(false)} color="primary">
                         Cancel
                     </Button>
