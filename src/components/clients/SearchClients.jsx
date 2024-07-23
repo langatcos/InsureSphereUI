@@ -157,14 +157,17 @@ const SearchClients = () => {
             (result.firstName && typeof result.firstName === 'string' && result.firstName.toLowerCase().includes(filter.toLowerCase())) ||
             (result.surname && typeof result.surname === 'string' && result.surname.toLowerCase().includes(filter.toLowerCase())) ||
             (result.id && result.id.toString().includes(filter))
-        );
+        ); result.id,result.clientType,result.title,result.firstName,result.surnmae,result.companyName
     });*/
 
-    const handleSearch2 = (clientId) => {
+    const handleSearch2 = (clientId,clientType,title,firstName,surname,companyName) => {
         setFilter('')
         setFilteredResults([])
         setSearchResult2("")
+        const searchInformation =(clientId,clientType,title,firstName,surname,companyName )
         //console.log("Thi is:" + clientId)
+        setSearchResult(JSON.stringify(searchInformation))
+        
         setSearchValue(clientId)
         //setViewDetailsSection(true);
         setEditArea(false);
@@ -494,7 +497,7 @@ const SearchClients = () => {
                                             {Array.isArray(filteredResults) && filteredResults.map((result) => (
                                                 <TableRow
                                                     key={result.id}
-                                                    onClick={() => handleSearch2(result.id)}
+                                                    onClick={() => handleSearch2(result.id,result.clientType,result.title,result.firstName,result.surnamae,result.companyName)}
                                                     className='SearchModal'
                                                 >
                                                     <TableCell>{result.id}</TableCell>
