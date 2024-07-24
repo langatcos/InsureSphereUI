@@ -28,6 +28,7 @@ import {
 import 'react-datepicker/dist/react-datepicker.css';
 import Relationships from './Relationships';
 import BankAccounts from './BankAccounts';
+import ContactDetails from './ContactDetails';
 
 const SearchClients = () => {
     const [searchvalue, setSearchValue] = useState("");
@@ -166,20 +167,20 @@ const SearchClients = () => {
 
                 const clientid = data[0]?.id;
                 const clienttype = data[0]?.clientType;
-                const title = data[0]?.title;
-                const firstName = data[0]?.firstName;
-                const surname = data[0]?.surname;
-                const companyName = data[0]?.companyName;
-                console.log(firstName)
+                const tt = data[0]?.title;
+                const fname = data[0]?.firstName;
+                const sname = data[0]?.surname;
+                const cname = data[0]?.companyName;
+                
                 
                 if (clientid) {
                     
                     setValue('1');
                     setNameSection(true)
-                    setSearchedClient(title+" "+firstName+" "+surname)
+                    setSearchedClient(tt+" "+fname+" "+sname)
 
                     if (clienttype === 1) {
-                        setSearchedClient(companyName)
+                        setSearchedClient(cname)
                         setClientId(clientId)
                         setSearchExist(true);
                         setCompanyExist(false);
@@ -831,7 +832,7 @@ console.log(searchClientName)
                             </div>
                         </TabPanel>
                         <TabPanel value="2"><Relationships clientId={searchvalue} /></TabPanel>
-                        <TabPanel value="3"> Test </TabPanel>
+                        <TabPanel value="3"> <ContactDetails clientId={searchvalue}/> </TabPanel>
                         <TabPanel value="4"><BankAccounts clientId={searchvalue} /></TabPanel>
                     </TabContext>}
 
