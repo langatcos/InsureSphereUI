@@ -71,7 +71,8 @@ const SearchClients = () => {
     const [filter, setFilter] = useState('');
     const [namesSection, setNameSection]=useState(false)
     const [filteredResults, setFilteredResults] = useState([]);
-    const [searchClientName, setSearchedClient] = useState("");
+    const [clientName, setClientName] = useState("");
+    
 
 
 
@@ -153,9 +154,11 @@ const SearchClients = () => {
         setFilter('')
         setFilteredResults([])
         setSearchResult2("")
-        const searchInformation =(clientId,clientType,title,firstName,surname,companyName )
+        const searchInformation ={clientId,clientType,title,firstName,surname,companyName }
         //console.log("Thi is:" + clientId)
-        //setSearchResult(JSON.stringify(searchInformation))
+        setSearchResult(JSON.stringify(searchInformation))
+        //setClientName(title + " "+ firstName+" " +surname)
+        //console.log(clientName)
         
         setSearchValue(clientId)
         //setViewDetailsSection(true);
@@ -177,10 +180,10 @@ const SearchClients = () => {
                     
                     setValue('1');
                     setNameSection(true)
-                    setSearchedClient(tt+" "+fname+" "+sname)
+                
 
                     if (clienttype === 1) {
-                        setSearchedClient(cname)
+                        setClientName(tt+" "+fname+" "+sname)
                         setClientId(clientId)
                         setSearchExist(true);
                         setCompanyExist(false);
@@ -188,6 +191,7 @@ const SearchClients = () => {
                         setAddRoleClientId(clientid)
                         setExistingClientId(clientId)
                     } else {
+                        setClientName(cname)
                         setClientId(clientId)
                         setSearchExist(false);
                         setCompanyExist(true);
@@ -208,7 +212,7 @@ const SearchClients = () => {
                 setCompanyExist(false);
             });
     };
-console.log(searchClientName)
+
     const handleViewDetails = (clientid) => {
         setEditArea(false);
         setOpen(false);
@@ -499,7 +503,7 @@ console.log(searchClientName)
                                             {Array.isArray(filteredResults) && filteredResults.map((result) => (
                                                 <TableRow
                                                     key={result.id}
-                                                    onClick={() => handleSearch2(result.id,result.clientType,result.title,result.firstName,result.surnamae,result.companyName)}
+                                                    onClick={() => handleSearch2(result.id,result.clientType,result.title,result.firstName,result.surname,result.companyName)}
                                                     className='SearchModal'
                                                 >
                                                     <TableCell>{result.id}</TableCell>
@@ -519,10 +523,11 @@ console.log(searchClientName)
                                 </Button>
                             </DialogActions>
                         </Dialog>
-                    </div>
+                    </div> <br></br>
                     {namesSection &&<div>
-                        {searchClientName}
+                       <label className='text-capitalize font-weight-bold'>{clientName}</label> 
                     </div>}
+                    <br></br>
                     {(searchexist || companyexist) && <TabContext value={value}>
                         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                             <TabList onChange={handleTabChange} aria-label="lab API tabs example">
