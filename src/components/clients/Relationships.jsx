@@ -37,6 +37,12 @@ const Relationships = ({ clientId }) => {
     const [relationshipField,setRelationshipField]=useState("")
     const [selectedDependantRow, setSelectedDependantRow]=useState("")
     const [showEdits,setShowEdits]=useState(false)
+    const [modalOpen,setModalOpen]=useState(false)
+    const [relationshipToEdit,setRelationshipToEdit]=useState("")
+    const [parentClientIdToEdit,setParentClientIdToEdit]=useState("")
+    const [childClientIdToEdit,setChildClientIdToEdit]=useState("")
+    const [relationship,setRelationship]=useState("")
+ 
 
     useEffect(() => {
         fetch(API_BASE_URL + "/getCodesByCodesetId/20")
@@ -61,6 +67,17 @@ const Relationships = ({ clientId }) => {
             })
 
     }, [])
+    const fetchClientrelationships=()=>{
+        fetch(API_BASE_URL + "/getRelationships/" + clientId)
+            .then(response => response.json())
+            .then((data) => {
+                setRelationships(data)
+                setRelationshipExist(true)
+
+            }).catch(error => {
+                setRelationshipExist(false)
+            })
+    }
 
     const fetchClientClientRelationship=()=>{
         fetch(API_BASE_URL + "/getRelationships/" + clientId)
@@ -75,6 +92,8 @@ const Relationships = ({ clientId }) => {
     };
     const handleAddRelation = () => {
         setShowSearch(true)
+        setShowEdits(false)
+        setSelectedDependantRow("")
 
 
     }
@@ -164,14 +183,49 @@ const Relationships = ({ clientId }) => {
             console.log(error);
         });
     }
-    const handleResultsClick=(childClientId)=>{
+    const handleResultsClick=(childClientId,parentClientId,relationship)=>{
         //console.log(childClientId)
         setSelectedDependantRow(childClientId)
+        setRelationshipToEdit(relationship)
         setShowEdits(true)
+        setParentClientIdToEdit(parentClientId)
+        setChildClientIdToEdit(childClientId)
+        
         
     }
     const handleEditClick=()=>{
+        setModalOpen(true)
 
+    }
+
+    const handleUpdateSubmit=(e)=>{
+        e.preventDefault()
+        console.log("Submitted")
+        const parentClientId=parentClientIdToEdit
+        const childClientId=childClientIdToEdit
+        const relationship=relationshipToEdit
+        
+        const newRelationship={parentClientId,childClientId,relationship}
+        //console.log(JSON.stringify(newRelationship))
+        fetch(API_BASE_URL + "/editClientRelationship/" + childClientId, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(newRelationship)
+        }).then(response => {
+            if (response.ok) {
+                setModalOpen(false);
+                return response.json();
+                //setRequiredAccountDetails(false)
+            } else {
+                console.log("Error occurred");
+            }
+        }).then(() => {
+            fetchClientrelationships(); // Refetch account details after successful update
+        }).catch(error => {
+            console.log(error);
+        });
     }
 
     return (
@@ -294,7 +348,7 @@ const Relationships = ({ clientId }) => {
                     </thead>
                     <tbody>
                         {Array.isArray(relationships) && relationships.map((rel) => (
-                            <tr key={rel.childClientId} onClick={e=>handleResultsClick(rel.childClientId)}
+                            <tr key={rel.childClientId} onClick={e=>handleResultsClick(rel.childClientId,rel.parentClientId,rel.relationship)}
                             className={selectedDependantRow === rel.childClientId ? 'table-active-custom' : ''} style={{ cursor: 'pointer' }}
                             >
                                 <td>{rel.parentClientId}</td>
@@ -309,6 +363,35 @@ const Relationships = ({ clientId }) => {
                     </tbody>
                 </table>
             </div>}
+
+            <Dialog open={modalOpen} onClose={() => setModalOpen(false)}>
+                <DialogTitle>Edit Relationship</DialogTitle>
+                <DialogContent>
+                    <FormControl fullWidth margin="dense">
+                        <InputLabel>Relationship</InputLabel>
+                        <Select
+                            value={relationshipToEdit}
+                            onChange={e => setRelationshipToEdit(e.target.value)}
+                        >
+                            {Array.isArray(relationshipTypes) && relationshipTypes.map(type => (
+                                <MenuItem key={type.id} value={type.description}>{type.description}</MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+
+                </DialogContent>
+
+                <DialogActions>
+
+                    <Button onClick={() => setModalOpen(false)} color="primary">
+                        Cancel
+                    </Button>
+                  
+                    <Button onClick={handleUpdateSubmit} color="primary">
+                        Update
+                    </Button>
+                </DialogActions>
+            </Dialog>
 
 
         </div>
