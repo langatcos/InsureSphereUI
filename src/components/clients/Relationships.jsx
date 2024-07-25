@@ -35,6 +35,8 @@ const Relationships = ({ clientId }) => {
     const [selectedRow, setSelectedRow] = useState("")
     const [selectedRelationshipType,setSelectedRelationshipType]=useState("")
     const [relationshipField,setRelationshipField]=useState("")
+    const [selectedDependantRow, setSelectedDependantRow]=useState("")
+    const [showEdits,setShowEdits]=useState(false)
 
     useEffect(() => {
         fetch(API_BASE_URL + "/getCodesByCodesetId/20")
@@ -162,6 +164,15 @@ const Relationships = ({ clientId }) => {
             console.log(error);
         });
     }
+    const handleResultsClick=(childClientId)=>{
+        //console.log(childClientId)
+        setSelectedDependantRow(childClientId)
+        setShowEdits(true)
+        
+    }
+    const handleEditClick=()=>{
+
+    }
 
     return (
         <div className='client'>
@@ -172,15 +183,15 @@ const Relationships = ({ clientId }) => {
                         <ControlPointOutlinedIcon className='addAccount' onClick={handleAddRelation} />
                     </Tooltip>
                 </div>
-                <div className='actionholder'>
+                {showEdits &&<div className='actionholder'>
                     <Tooltip title="Edit Relationships">
-                        <EditOutlinedIcon className='editAccount' onClick="" />
-                    </Tooltip></div>
-                <div className='actionholder'>
+                        <EditOutlinedIcon className='editAccount' onClick={handleEditClick} />
+                    </Tooltip></div>}
+                    {showEdits &&<div className='actionholder'>
                     <Tooltip title="Remove Relationship">
                         <RemoveCircleOutlineOutlinedIcon className='deleteAccount' onClick="" />
                     </Tooltip>
-                </div>
+                </div>}
             </div> <br></br>
             {showSearch && <form onSubmit={handleSearch}>
                 <div className="search">
@@ -216,7 +227,7 @@ const Relationships = ({ clientId }) => {
                                 {Array.isArray(filteredResults) && filteredResults.map((result) => (
                                     <TableRow
                                         key={result.id}
-                                        onClick={() => selectedClient(result.id, result.clientType, result.title, result.firstName, result.surnamae, result.companyName)}
+                                        onClick={() => selectedClient(result.id, result.clientType, result.title, result.firstName, result.surname, result.companyName)}
                                         className={selectedRow === result.id ? 'table-active-custom' : ''}
                                     >
                                         <TableCell>{result.id}</TableCell>
@@ -283,7 +294,9 @@ const Relationships = ({ clientId }) => {
                     </thead>
                     <tbody>
                         {Array.isArray(relationships) && relationships.map((rel) => (
-                            <tr key={rel.childClientId}>
+                            <tr key={rel.childClientId} onClick={e=>handleResultsClick(rel.childClientId)}
+                            className={selectedDependantRow === rel.childClientId ? 'table-active-custom' : ''} style={{ cursor: 'pointer' }}
+                            >
                                 <td>{rel.parentClientId}</td>
                                 <td>{rel.parentFirstName} {rel.parentSurname}</td>
                                 <td>{rel.childClientId}</td>

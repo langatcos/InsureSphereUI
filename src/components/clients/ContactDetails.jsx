@@ -152,8 +152,7 @@ const ContactDetails = ({ clientId }) => {
         }).catch(error => {
             console.log(error);
         });
-    
-
+   
     }
     return (
         <div className="container">
