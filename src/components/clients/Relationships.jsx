@@ -227,7 +227,28 @@ const Relationships = ({ clientId }) => {
             console.log(error);
         });
     }
+    const handleDeleteRelationship = () => {
 
+        if (selectedDependantRow) {
+            fetch(API_BASE_URL + "/deleteRelationship/"+childClientIdToEdit, {
+                method: 'DELETE'
+            }).then((response) => {
+                if (response.ok) {
+                    console.log("ClientRelationship Account deleted successifully");
+                    fetchClientClientRelationship()
+                }
+                else {
+                    console.error("Failed to delete Relationship");
+                }
+            }).catch((error) => {
+                console.error("Error deleting Relationship:", error);
+            });
+        }
+        else {
+            console.log("No Relationships Selected for Deletion")
+        }
+
+    }
     return (
         <div className='client'>
 
@@ -243,7 +264,7 @@ const Relationships = ({ clientId }) => {
                     </Tooltip></div>}
                     {showEdits &&<div className='actionholder'>
                     <Tooltip title="Remove Relationship">
-                        <RemoveCircleOutlineOutlinedIcon className='deleteAccount' onClick="" />
+                        <RemoveCircleOutlineOutlinedIcon className='deleteAccount' onClick={handleDeleteRelationship} />
                     </Tooltip>
                 </div>}
             </div> <br></br>
