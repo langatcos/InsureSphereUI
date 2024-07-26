@@ -42,6 +42,8 @@ const Relationships = ({ clientId }) => {
     const [parentClientIdToEdit,setParentClientIdToEdit]=useState("")
     const [childClientIdToEdit,setChildClientIdToEdit]=useState("")
     const [relationship,setRelationship]=useState("")
+    const [showAddRelationship,setShowAddRelationship]=useState(true)
+    const [showDependantEx,setShowDependantEx]=useState(false)
  
 
     useEffect(() => {
@@ -61,6 +63,13 @@ const Relationships = ({ clientId }) => {
             .then((data) => {
                 setRelationships(data)
                 setRelationshipExist(true)
+                const clientChild = data[0]?.childClientId;
+                console.log("This is the ClientChildId:"+clientChild)
+                if(clientId===clientChild){
+                    setShowAddRelationship(false)
+                    setShowEdits(false)
+                    setShowDependantEx(true)
+                }
 
             }).catch(error => {
                 setRelationshipExist(false)
@@ -73,6 +82,13 @@ const Relationships = ({ clientId }) => {
             .then((data) => {
                 setRelationships(data)
                 setRelationshipExist(true)
+                const clientChild = data[0]?.childClientId;
+                if(clientId===clientChild){
+                    setShowAddRelationship(false)
+                    setShowEdits(false)
+                    setShowDependantEx(true)
+                }
+                
 
             }).catch(error => {
                 setRelationshipExist(false)
@@ -190,6 +206,9 @@ const Relationships = ({ clientId }) => {
         setShowEdits(true)
         setParentClientIdToEdit(parentClientId)
         setChildClientIdToEdit(childClientId)
+        if(childClientId===clientId){
+            setShowEdits(false)
+        }
         
         
     }
@@ -234,7 +253,7 @@ const Relationships = ({ clientId }) => {
                 method: 'DELETE'
             }).then((response) => {
                 if (response.ok) {
-                    console.log("ClientRelationship Account deleted successifully");
+                    console.log("ClientRelationship  deleted successifully");
                     fetchClientClientRelationship()
                 }
                 else {
@@ -253,11 +272,11 @@ const Relationships = ({ clientId }) => {
         <div className='client'>
 
             <div className='buttoncontainer'>
-                <div className='actionholder'>
+                {showAddRelationship &&<div className='actionholder'>
                     <Tooltip title="Add Relation">
                         <ControlPointOutlinedIcon className='addAccount' onClick={handleAddRelation} />
                     </Tooltip>
-                </div>
+                </div>}
                 {showEdits &&<div className='actionholder'>
                     <Tooltip title="Edit Relationships">
                         <EditOutlinedIcon className='editAccount' onClick={handleEditClick} />
@@ -383,6 +402,9 @@ const Relationships = ({ clientId }) => {
 
                     </tbody>
                 </table>
+            </div>}
+            {showDependantEx &&<div>
+                <label>The Client Selected is a dependant and Relationships cannot be managed here</label>
             </div>}
 
             <Dialog open={modalOpen} onClose={() => setModalOpen(false)}>

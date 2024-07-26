@@ -60,7 +60,7 @@ const ContactDetails = ({ clientId }) => {
             .then(data => {
                 if (Array.isArray(data)) {
                     setContactDetails(data);
-                    console.log(data)
+                    
                 }
             }).catch((error) => {
 
@@ -107,11 +107,19 @@ const ContactDetails = ({ clientId }) => {
             if (response.ok) {
                 setAddModalOpen(false);
                 return response.json();
+
             } else {
                 console.log("Error occurred");
             }
         }).then(() => {
             fetchClientContacts();
+        }).then(()=>{
+            setAddressType("")
+            setAddress1("")
+            setAddress2("")
+            setAddress3("")
+            setAddress4("")
+
         }).catch(error => {
             console.log(error);
         });
