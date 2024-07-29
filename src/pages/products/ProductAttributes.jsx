@@ -21,6 +21,8 @@ const ProductAttributes = () => {
     const [expandedSubparentId, setExpandedSubparentId] = useState(null)
     const [expandedSubproductId, setExpandedSubproductId] = useState(null)
     const [expandedSubbenefitId, setExpandedSubbenefitId] = useState(null)
+    const [expandedCoreLine, setExpandedCoreLine] = useState(null)
+
     const [addProduct, setAddProduct] = useState(false);
     const [products, setProducts] = useState([])
     const [parentId, setparentId] = useState("")
@@ -39,6 +41,7 @@ const ProductAttributes = () => {
     const [allBenefitFieldsAttr, setAllBenFieldsAttributesAttr] = useState([])
     const [inputValue, setInputValue] = useState({})
     const [inputValue2, setInputValue2] = useState({})
+    const [onProductClick,setOnProductClick]=useState(false)
 
 
     useEffect(() => {
@@ -118,6 +121,7 @@ const ProductAttributes = () => {
             setparentId("")
             setbenefitAttributeType("Benefit")
             setBenefitAttributeFields(false)
+            setOnProductClick(true)
 
 
 
@@ -356,18 +360,20 @@ const ProductAttributes = () => {
                                         setparentId(item.productId)
                                         setproductId(item.productId)
                                         setproductName(item.productName)
+                                        
                                     }}>
                                         <button onClick={() => setExpandedItemId(item.productId)}>
                                             {expandedItemId === item.productId ? '-' : '+'}
                                         </button>
+                                        <label className={expandedItemId === item.productId ? 'itemSelected' : ''}>{item.productName} </label>
 
-                                        {item.productName}
+                                        
                                     </h3>
 
 
                                     {expandedItemId === item.productId && <div className='description'>
                                         <ul className="list-group list-group-flush">
-                                            <div className='header'> Benefits </div>
+                                            <div className='header'> Coverages </div>
                                             {benefits.filter(benefit => benefit.parentId === item.productId && benefit.benefitAttributeType === "Benefit")
                                                 .map(benefit => (
                                                     <li className="list-group-item list-group-item-action hover " key={benefit.benefitId}>
@@ -380,7 +386,8 @@ const ProductAttributes = () => {
                                                             <button onClick={() => setExpandedbenefitId(expandedbenefitId === benefit.benefitId ? null : benefit.benefitId)}>
                                                                 {expandedbenefitId === benefit.benefitId ? '-' : '+'}
                                                             </button>
-                                                            {benefit.benefitDescription}
+                                                            <label className={expandedbenefitId === benefit.benefitId ? 'itemSelected' : ''}>{benefit.benefitDescription} </label>
+                                                            
                                                         </div>
                                                         {expandBenefit && expandedbenefitId === benefit.benefitId && <div className='subbenefits'>
                                                             <ul className="list-group list-group-flush">
@@ -397,22 +404,23 @@ const ProductAttributes = () => {
                                                                                 <button onClick={() => setExpandedSubbenefitId(expandedSubbenefitId === subbenefit.benefitId ? null : subbenefit.benefitId)}>
                                                                                     {expandedSubbenefitId === subbenefit.benefitId ? '-' : '+'}
                                                                                 </button>
+                                                                                <label className={expandedSubbenefitId === subbenefit.benefitId ? 'itemSelected' : ''}>{subbenefit.benefitDescription} </label>
 
-                                                                                {subbenefit.benefitDescription}
+                                                                                
                                                                             </div>
 
                                                                             {expandSubBenefit && expandedSubbenefitId === subbenefit.benefitId && <div>
                                                                                 <ul className="list-group list-group-flush">
-                                                                                    <div className='header'> Core Lines </div>
+                                                                                    <div className='header'> Consumables </div>
                                                                                     {benefits.filter(core => core.parentId === subbenefit.benefitId && core.productId === subbenefit.productId && core.benefitAttributeType === "Core Line")
                                                                                         .map(core => (
                                                                                             <li key={core.benefitId} className="list-group-item list-group-item-action hover" onClick={() => {
                                                                                                 handleCoreClick(core.benefitId)
-                                                                                                setparentId(core.benefitId)                                                
+                                                                                                setparentId(core.benefitId) 
+                                                                                                setExpandedCoreLine(core.benefitId)                                               
                               
                                                                                             }}>
-
-                                                                                                {core.benefitDescription}
+                                                                                                <label className={expandedCoreLine === core.benefitId ? 'itemSelected' : ''}>{core.benefitDescription} </label>
 
                                                                                             </li>
                                                                                         ))}
@@ -444,6 +452,8 @@ const ProductAttributes = () => {
             </div>
 
             <div className="rightside">
+
+                {onProductClick&&<div>  </div>}
                 {addProduct && <div className="add_product">
                     <div className="modal-content">
                         <AddProduct />
@@ -502,13 +512,6 @@ const ProductAttributes = () => {
 
 
                                             )}
-
-
-
-
-
-
-
                                             {field.inputControl === 'select' && (
                                                 <select name={field.infoId}
                                                     defaultValue={field.value || ""}
@@ -543,10 +546,6 @@ const ProductAttributes = () => {
                                         </div>
 
                                     </div>
-
-
-
-
                                 </div>
 
                             ))}
@@ -556,13 +555,6 @@ const ProductAttributes = () => {
                             <button type='submit' onClick={handleApplyAttributes}>Apply Changes</button>
                             <div></div>
                         </div>
-
-
-
-
-
-
-
                     </form>
 
 

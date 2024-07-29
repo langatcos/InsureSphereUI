@@ -19,6 +19,20 @@
                 font-weight: 200;
                 font-size: 14px;
             }
+            .benefit{
+                cursor: pointer;
+                button{
+                    color: rgb(57, 82, 66);
+                }
+            }
+            label{
+                cursor: pointer;
+                
+            }
+            label.itemSelected{
+                color: rgb(68, 80, 68);
+                background-color: rgb(198, 198, 219);
+            }
     
           }
     

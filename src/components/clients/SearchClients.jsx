@@ -586,7 +586,7 @@ const SearchClients = () => {
                                                     <td>{item.clientType}</td>
                                                     <td>{item.companyName}</td>
                                                     <td>
-                                                        {viewDetails && <button onClick={(e) => handleViewDetails(item.id)}>View Details</button>}
+                                                        {viewDetails && <button >View Details</button>}
                                                         {addRole && <button onClick={(e) => handleAddRoleButton()}>Add Role</button>}
 
                                                     </td>
