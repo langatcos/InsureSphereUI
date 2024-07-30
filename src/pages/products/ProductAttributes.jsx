@@ -259,6 +259,7 @@ const ProductAttributes = () => {
         //console.log(productBenefitFieldsdata)
     }
     const handleCoreClick = (id) => {
+        console.log(id)
         ////setbenefitAttributeType("Core Line")
         //setClickedType("Sub Benefit")
         //setBenefitAttributeFields(true)

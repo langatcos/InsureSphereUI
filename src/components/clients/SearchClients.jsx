@@ -580,7 +580,7 @@ const SearchClients = () => {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {searchresult.map((item) => (
+                                            {Array.isArray(searchresult) &&searchresult.map((item) => (
                                                 <tr key={item.id}>
                                                     <td>{item.id}</td>
                                                     <td>{item.clientType}</td>
