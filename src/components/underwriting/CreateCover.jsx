@@ -132,12 +132,18 @@ const CreateCover = () => {
         console.log(clientType)
     }
 
-   
+   const handleChangePolicyholder =(e)=>{
+    e.preventDefault()
+    setShowPolicyholderSection(false)
+    setPolicyholderId("")
+    setPolicyholderType("")
+    setPolicyHolderName("")
+
+   }
 
     return (
         <div>
-            <form>
-                <div className="form-group">
+            <div className="form-group">
                     <label>Policy Holder Name</label>
                     <div className="search">
 
@@ -200,6 +206,8 @@ const CreateCover = () => {
 
 
                 </div>
+            <form>
+                
                 {showPolicyholderSection &&<div className="policyholderSection">
                     <table className="table table-hover table-sm table-striped">
                         <thead>
@@ -207,6 +215,7 @@ const CreateCover = () => {
                                 <td>Client Type</td>
                                 <td>ID</td>
                                 <td>Name</td>
+                                <td>Action</td>
                             </tr>
                         </thead>
                         <tbody>
@@ -214,6 +223,7 @@ const CreateCover = () => {
                                 <td>{policyholderType}</td>
                                 <td>{policyholderId}</td>
                                 <td>{policyholderName}</td>
+                                <td><button className="btn btn-info" onClick={handleChangePolicyholder}>Remove</button></td>
                             </tr>
                         </tbody>
                     </table>
