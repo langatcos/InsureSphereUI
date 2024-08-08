@@ -25,12 +25,16 @@ const CreateCover = () => {
     const [availablebenefits, setAvailablebenefits] = useState(false)
     const [selectedBenefits, setSelectedBenefits] = useState([]);
     const [EffectiveDate, setEffectiveDate] = useState("")
-    const [policyholderName, setPolicyholdername] = useState("")
+    const [searchPolicyHolder, setSearchPolicyHolder] = useState("")
     const [open, setOpen] = useState(false);
     const [searchResults, setSearchResults]=useState([])
     const [filter,setFilter]=useState("")
     const [filteredResults,setFilteredResults]=useState([])
     const [searchresult2,setSearchresult2]=useState("")
+    const [policyholderId, setPolicyholderId]=useState("")
+    const [policyholderType,setPolicyholderType]=useState("")
+    const [policyholderName,setPolicyHolderName]=useState("")
+    const [showPolicyholderSection, setShowPolicyholderSection]=useState(false)
     
 
     useEffect(() => {
@@ -93,9 +97,9 @@ const CreateCover = () => {
         console.log(selectedBenefits)
     };
     const handleSearch = (e) => {
-        console.log(policyholderName)
+        console.log(searchPolicyHolder)
 
-        fetch(API_BASE_URL + "/getclientbySearchvalue/" + policyholderName)
+        fetch(API_BASE_URL + "/getclientbySearchvalue/" + searchPolicyHolder)
             .then((response) => response.json())
             .then(data => {              
                 if(Array.isArray(data)){
@@ -114,6 +118,19 @@ const CreateCover = () => {
         setOpen(false);
         setFilter("")
     };
+    const handleSelect=(id, clientType, title, firstName, surname, companyName)=>{
+        setPolicyholderId(id)
+        setPolicyholderType(clientType)
+        if (clientType===1){
+            setPolicyHolderName(title+" "+firstName+" "+surname)
+        }
+        else{
+            setPolicyHolderName(companyName)
+        }
+        setShowPolicyholderSection(true)
+        setOpen(false)
+        console.log(clientType)
+    }
 
    
 
@@ -126,7 +143,7 @@ const CreateCover = () => {
 
                         <input placeholder='Search ...'
                          onChange={e => {
-                            setPolicyholdername(e.target.value)
+                            setSearchPolicyHolder(e.target.value)
                             setFilteredResults([])
                             setFilter("")
 
@@ -160,7 +177,7 @@ const CreateCover = () => {
                                         {Array.isArray(filteredResults) && filteredResults.map((result) => (
                                             <TableRow
                                                 key={result.id}
-                                                onClick={() => handleSearch(result.id, result.clientType, result.title, result.firstName, result.surname, result.companyName)}
+                                                onClick={() => handleSelect(result.id, result.clientType, result.title, result.firstName, result.surname, result.companyName)}
                                                 className='SearchModal'
                                             >
                                                 <TableCell>{result.id}</TableCell>
@@ -183,6 +200,24 @@ const CreateCover = () => {
 
 
                 </div>
+                {showPolicyholderSection &&<div className="policyholderSection">
+                    <table className="table table-hover table-sm table-striped">
+                        <thead>
+                            <tr>
+                                <td>Client Type</td>
+                                <td>ID</td>
+                                <td>Name</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{policyholderType}</td>
+                                <td>{policyholderId}</td>
+                                <td>{policyholderName}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>}
                 <div className="form-group">
                     <label>Effective Date</label>
                     <div className="iteminput">
