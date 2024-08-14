@@ -23,3 +23,26 @@ input{
 input::placeholder{
     font-size: 12px;
 }
+.benefit-item{
+    display: flex;
+    margin-left: 10px;
+    padding: 3px;
+    justify-content: space-between;
+    
+
+
+
+}
+.benefits{
+    display: flex;
+}
+.row_item{
+    margin-left: 10px;
+}
+
+.subcontent{
+    box-shadow: -2px 0px 0px 0px rgba(0,0,0,0.08);
+    -webkit-box-shadow: -2px 0px 0px 0px rgba(0,0,0,0.08);
+    -moz-box-shadow: -2px 0px 0px 0px rgba(0,0,0,0.08);
+
+}
