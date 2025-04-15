@@ -91,6 +91,25 @@ const ContactDetails = ({ clientId }) => {
 
     }
     const handleDeleteContact = () => {
+  if (addressId) {
+            fetch(API_BASE_URL + "/delete-client-contact?childClientId="+clientId+"&addressId="+addressId, {
+                method: 'DELETE'
+            }).then((response) => {
+                if (response.ok) {
+                    console.log("Contact  deleted successifully");
+                    setAddModalOpen(false);
+                    fetchClientContacts()
+                }
+                else {
+                    console.error("Failed to delete Client Contact");
+                }
+            }).catch((error) => {
+                console.error("Error deleting Client Contact:", error);
+            });
+        }
+        else {
+            console.log("No Client Contact Selected for Deletion")
+        }
 
     }
     const handleAddSubmit=(e)=>{

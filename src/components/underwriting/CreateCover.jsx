@@ -245,7 +245,7 @@ const CreateCover = () => {
                     </table>
                 </div>}
                 <div className="form-group">
-                    <label>Effective Date</label>
+                    <label>Policy Effective Date</label>
                     <div className="iteminput">
 
 
